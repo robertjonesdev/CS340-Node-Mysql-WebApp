@@ -1,0 +1,106 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand" href="index.html">Space Missions</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/missions">Missions</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/astronauts">Astronauts</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/spacecraft">Spacecraft</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/destinations">Space Destinations <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/countries">Countries</a>
+      </li>
+      <!--
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown link
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+  -->
+    </ul>
+  </div>
+</nav>
+<br>
+<div class="col-md-8">
+    <div class="jumbotron pt-4">
+        <div class="container-fluid row">
+            <div class="col-md-5"><h2 class="text-secondary">Space Destinations</h2></div>
+            <div class="col-md-3"><a href="/destinations/desc" class="btn btn-primary" role="button">Sort Descending</a></div>
+            <div class="col-md-3"><a href="/destinations/asc" class="btn btn-primary" role="button">Sort Ascending</a></div>
+            <div class="col-md-1"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add</button></div>
+        </div>
+
+        <hr />
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Distance From Earth (mi.)</th>
+                <th>Edit / Delete</th>
+            </tr>
+            </thead>
+            <tbody id="rowgroup">
+                {{#each results}}
+                <tr>
+                      <td>{{destination_id}} {{name}}</td>
+                      <td>{{distance_from_earth}}</td>
+                    <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
+                    <button type="button" class="btn btn-primary btn-sm">Delete</button></td>
+                </tr>
+
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Destination</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form id="addRow" name="addRow" method="post" action"/destinations">
+              <!-- <input type="hidden" id="edit-id" name="editId"> -->
+              <div class="form-group">
+                    <label for="name" class="col-form-label">Destination Name:</label>
+                    <input type="text" class="form-control" id="name" name="name">
+              </div>
+              <div class="form-group">
+                    <label for="distance_from_earth" class="col-form-label">Distance From Earth (mi):</label>
+                    <input type="text" class="form-control" id="distance_from_earth" name="distance_from_earth">
+              </div>
+          </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <input type="submit" class="btn btn-secondary">
+            </div>
+          </form>
+
+      </div>
+
+    </div>
+  </div>
