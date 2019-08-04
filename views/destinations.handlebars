@@ -42,9 +42,18 @@
 <div class="col-md-8">
     <div class="jumbotron pt-4">
         <div class="container-fluid row">
-            <div class="col-md-5"><h2 class="text-secondary">Space Destinations</h2></div>
-            <div class="col-md-3"><a href="/destinations/desc" class="btn btn-primary" role="button">Sort Descending</a></div>
-            <div class="col-md-3"><a href="/destinations/asc" class="btn btn-primary" role="button">Sort Ascending</a></div>
+            <div class="col-md-8"><h2 class="text-secondary">Space Destinations</h2></div>
+            <div class="col-md-3">
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Sort by distance
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/destinations/desc">Descending</a>
+                        <a class="dropdown-item" href="/destinations/asc">Ascending</a>
+                  </div>
+                </div>
+            </div>
             <div class="col-md-1"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add</button></div>
         </div>
 

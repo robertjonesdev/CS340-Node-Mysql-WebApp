@@ -45,7 +45,7 @@
             <div class="col-md-8"><h2 class="text-secondary">Space Missions</h2></div>
             <div class="col-md-3">
                 <div class="dropdown">
-                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <button class="btn btn-primary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Display by Country
                   </button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -116,40 +116,52 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="editRow" name="editRow">
+          <form id="addRow" name="addRow"  method="post" action"/destinations>
             <input type="hidden" id="edit-id" name="editId">
+              <div class="form-group">
+                    <label for="destination_id" class="col-form-label">Destination:</label>
+                    <select class="form-control" id="destination_id">
+                        {{#each destinations}}
+                          <option value="{{destination_id}}">{{name}}</option>
+                        {{/each}}
+                    </select>
+              </div>
+              <div class="form-group">
+                    <label for="spacecraft_id" class="col-form-label">Spacecraft:</label>
+                    <select class="form-control" id="spacecraft_id">
+                        {{#each spacecraft}}
+                          <option value="{{spacecraft_id}}">{{name}}</option>
+                        {{/each}}
+                    </select>
+              </div>
+             <div class="form-group">
+               <label for="launch_date" class="col-form-label">Launch Date:</label>
+               <input type="date" class="form-control" id="launch_date" name="launch_date">
+             </div>
+             <div class="form-group">
+               <label for="end_date" class="col-form-label">End Date:</label>
+               <input type="date" class="form-control" id="end-date" name="end_date">
+             </div>
             <div class="form-group">
-                  <label for="edit-name" class="col-form-label">Destination:</label>
-                  <input type="text" class="form-control" id="edit-name" name="editName">
+              <label for="country_id" class="col-form-label">County</label>
+                <select class="form-control" id="country_id">
+                      {{#each countries}}
+                        <option value="{{country_id}}">{{name}}</option>
+                      {{/each}}
+                  </select>
             </div>
             <div class="form-group">
-                  <label for="edit-name" class="col-form-label">Spacecraft:</label>
-                  <input type="text" class="form-control" id="edit-name" name="editName">
-            </div>
-           <div class="form-group">
-             <label for="edit-date" class="col-form-label">Launch Date:</label>
-             <input type="date" class="form-control" id="edit-date" name="editDate">
-           </div>
-           <div class="form-group">
-             <label for="edit-date" class="col-form-label">End Date:</label>
-             <input type="date" class="form-control" id="edit-date" name="editDate">
-           </div>
-          <div class="form-group">
-            <label for="edit-reps" class="col-form-label">County</label>
-            <input type="number" class="form-control" id="edit-reps" name="editReps">
-          </div>
-          <div class="form-group">
               <fieldset class="form-group align-items-center">
                   <div class="form-row align-items-center">
                       <legend class="col-form-label">Success:</legend>
                         <div class="col-sm-9">
                           <div class="form-check form-check-inline">
-                            <input class="form-check-input form-check" type="radio" name="editLbs" id="editLbs" value="1">
-                            <label class="form-check-label form-check" for="edit-lbs">Yes</label>
+                            <input class="form-check-input form-check" type="radio" name="success" id="success" value="1">
+                            <label class="form-check-label form-check" for="success">Yes</label>
                           </div>
                           <div class="form-check form-check-inline">
-                            <input class="form-check-input form-check" type="radio" name="editLbs" id="editLbs" value="0">
-                            <label class="form-check-label form-check" for="edit-lbs">No</label>
+                            <input class="form-check-input form-check" type="radio" name="success" id="success" value="0">
+                            <label class="form-check-label form-check" for="success">No</label>
                           </div>
                       </div>
                     </div>
@@ -158,9 +170,9 @@
         </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-secondary">Add</button>
+            <input type="submit" class="btn btn-secondary">
           </div>
-        </form>
+          </form>
       </div>
     </div>
   </div>
@@ -176,27 +188,39 @@
           </button>
         </div>
         <div class="modal-body">
-          <form id="editRow" name="editRow">
+          <form id="editRow" name="editRow"  method="post" action"/destinations">
             <input type="hidden" id="edit-id" name="editId">
               <div class="form-group">
-                    <label for="edit-name" class="col-form-label">Destination:</label>
-                    <input type="text" class="form-control" id="edit-name" name="editName">
+                    <label for="destination_id" class="col-form-label">Destination:</label>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {{#each destinations}}
+                          <div class="dropdown-item">{{name}}</div>
+                        {{/each}}
+                    </div>
               </div>
               <div class="form-group">
-                    <label for="edit-name" class="col-form-label">Spacecraft:</label>
-                    <input type="text" class="form-control" id="edit-name" name="editName">
+                    <label for="spacecraft_id" class="col-form-label">Spacecraft:</label>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {{#each spacecraft}}
+                          <div class="dropdown-item">{{name}}</div>
+                        {{/each}}
+                    </div>
               </div>
              <div class="form-group">
-               <label for="edit-date" class="col-form-label">Launch Date:</label>
-               <input type="date" class="form-control" id="edit-date" name="editDate">
+               <label for="launch_date" class="col-form-label">Launch Date:</label>
+               <input type="date" class="form-control" id="launch_date" name="launch_date">
              </div>
              <div class="form-group">
-               <label for="edit-date" class="col-form-label">End Date:</label>
-               <input type="date" class="form-control" id="edit-date" name="editDate">
+               <label for="end_date" class="col-form-label">End Date:</label>
+               <input type="date" class="form-control" id="end-date" name="end_date">
              </div>
             <div class="form-group">
-              <label for="edit-reps" class="col-form-label">County</label>
-              <input type="number" class="form-control" id="edit-reps" name="editReps">
+              <label for="country_id" class="col-form-label">County</label>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      {{#each countries}}
+                        <div class="dropdown-item">{{name}}</div>
+                      {{/each}}
+                  </div>
             </div>
             <div class="form-group">
               <fieldset class="form-group align-items-center">
@@ -204,12 +228,12 @@
                       <legend class="col-form-label">Success:</legend>
                         <div class="col-sm-9">
                           <div class="form-check form-check-inline">
-                            <input class="form-check-input form-check" type="radio" name="editLbs" id="editLbs" value="1">
-                            <label class="form-check-label form-check" for="edit-lbs">Yes</label>
+                            <input class="form-check-input form-check" type="radio" name="success" id="success" value="1">
+                            <label class="form-check-label form-check" for="success">Yes</label>
                           </div>
                           <div class="form-check form-check-inline">
-                            <input class="form-check-input form-check" type="radio" name="editLbs" id="editLbs" value="0">
-                            <label class="form-check-label form-check" for="edit-lbs">No</label>
+                            <input class="form-check-input form-check" type="radio" name="success" id="success" value="0">
+                            <label class="form-check-label form-check" for="success">No</label>
                           </div>
                       </div>
                     </div>
@@ -218,7 +242,7 @@
         </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-secondary">Save</button>
+            <input type="submit" class="btn btn-secondary">
           </div>
           </form>
         </div>

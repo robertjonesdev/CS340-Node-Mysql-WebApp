@@ -45,7 +45,7 @@
             <div class="col-md-8"><h2 class="text-secondary">Astronauts</h2></div>
             <div class="col-md-3">
                 <div class="dropdown">
-                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <button class="btn btn-primary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Display by Country
                   </button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -112,27 +112,31 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="editRow" name="editRow">
+        <form id="addRow" name="addRow">
             <input type="hidden" id="edit-id" name="editId">
             <div class="form-group">
-                  <label for="edit-name" class="col-form-label">Fist Name:</label>
-                  <input type="text" class="form-control" id="edit-name" name="editName">
+                  <label for="first_name" class="col-form-label">Fist Name:</label>
+                  <input type="text" class="form-control" id="first_name" name="first_name">
             </div>
             <div class="form-group">
-                  <label for="edit-name" class="col-form-label">Last name:</label>
-                  <input type="text" class="form-control" id="edit-name" name="editName">
+                  <label for="last_name" class="col-form-label">Last name:</label>
+                  <input type="text" class="form-control" id="last-name" name="last_name">
             </div>
            <div class="form-group">
-             <label for="edit-date" class="col-form-label">Birth Date:</label>
-             <input type="date" class="form-control" id="edit-date" name="editDate">
+             <label for="birth_date" class="col-form-label">Birth Date:</label>
+             <input type="date" class="form-control" id="birth_date" name="birth_date">
            </div>
            <div class="form-group">
-             <label for="edit-date" class="col-form-label">Death Date:</label>
-             <input type="date" class="form-control" id="edit-date" name="editDate">
+             <label for="death_date" class="col-form-label">Death Date:</label>
+             <input type="date" class="form-control" id="death_date" name="death_date">
            </div>
           <div class="form-group">
-            <label for="edit-reps" class="col-form-label">County</label>
-            <input type="number" class="form-control" id="edit-reps" name="editReps">
+            <label for="country_id" class="col-form-label">County</label>
+            <select class="form-control" id="country_id">
+                  {{#each countries}}
+                    <option value="{{country_id}}">{{name}}</option>
+                  {{/each}}
+              </select>
           </div>
         </div>
           <div class="modal-footer">
