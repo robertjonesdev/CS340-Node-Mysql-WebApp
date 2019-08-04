@@ -82,6 +82,51 @@ app.post('/destinations', function(req, res, next){
     }
 });
 
+/* Insert New Spacecraft */
+app.post('/spacecraft', function(req, res, next){
+      var pParams = [];
+      if (req.body['name'] == '') {
+          res.status(500).send({ error: "Empty name field." });
+      } else {
+      pParams.push(req.body['name']);
+      pParams.push(req.body['service_start_date']);
+      pParams.push(req.body['service_end_date']);
+      pParams.push(Number(req.body['country_id']));
+      console.log(pParams);
+      mysql.pool.query("INSERT INTO spacecraft (name, service_start_date, service_end_date, country_id) VALUES (?)", [pParams], function(err, result, fields){
+          if(err) throw err;
+          console.log("Number of records inserted: " + result.affectedRows + " with id " + result.insertId);
+
+          var context = {};
+          //First get the country id's and names for the sort drop down box.
+          mysql.pool.query('SELECT country_id, name FROM country_of_origin', function(err, rows, fields){
+            if(err){
+              next(err);
+              return;
+            }
+            context.countries = rows;
+
+              //Next, get the spacecraft and render page.
+              mysql.pool.query('SELECT S1.spacecraft_id AS spacecraft_id, '+
+                                  'S1.name AS name, '+
+                                  'DATE_FORMAT(S1.service_start_date, "%Y-%m-%d") AS service_start_date, '+
+                                  'DATE_FORMAT(S1.service_end_date, "%Y-%m-%d", NULL) AS service_end_date, '+
+                                  'C1.name AS cname '+
+                                'FROM spacecraft AS S1 '+
+                                 'INNER JOIN country_of_origin AS C1 ON S1.country_id = C1.country_id', function(err, rows, fields){
+                if(err){
+                  next(err);
+                  return;
+                }
+                context.results = rows;
+                console.log("Select Spacecraft [0...i]: " + context.results[0]);
+                res.render('spacecraft', context);
+              });
+          });
+      });
+    }
+});
+
 /*******************************************
 *       READ / SQL SELECT
 *********************************************/
@@ -337,23 +382,23 @@ app.get('/spacecraft/:country_id',function(req,res,next){
         return;
       }
       context.countries = rows;
-    });
-    //Next, get the spacecraft and render page.
-    mysql.pool.query('SELECT S1.spacecraft_id AS spacecraft_id, '+
-                        'S1.name AS name, '+
-                        'DATE_FORMAT(S1.service_start_date, "%Y-%m-%d") AS service_start_date, '+
-                        'DATE_FORMAT(S1.service_end_date, "%Y-%m-%d", NULL) AS service_end_date, '+
-                        'C1.name AS cname '+
-                      'FROM spacecraft AS S1 '+
-                       'INNER JOIN country_of_origin AS C1 ON S1.country_id = C1.country_id '+
-                       'WHERE S1.country_id = ' + req.params.country_id, function(err, rows, fields){
-      if(err){
-        next(err);
-        return;
-      }
-      context.results = rows;
-      console.log("Select Spacecraft [0...i]: " + context.results[0]);
-      res.render('spacecraft', context);
+        //Next, get the spacecraft and render page.
+        mysql.pool.query('SELECT S1.spacecraft_id AS spacecraft_id, '+
+                            'S1.name AS name, '+
+                            'DATE_FORMAT(S1.service_start_date, "%Y-%m-%d") AS service_start_date, '+
+                            'DATE_FORMAT(S1.service_end_date, "%Y-%m-%d", NULL) AS service_end_date, '+
+                            'C1.name AS cname '+
+                          'FROM spacecraft AS S1 '+
+                           'INNER JOIN country_of_origin AS C1 ON S1.country_id = C1.country_id '+
+                           'WHERE S1.country_id = ' + req.params.country_id, function(err, rows, fields){
+          if(err){
+            next(err);
+            return;
+          }
+          context.results = rows;
+          console.log("Select Spacecraft [0...i]: " + context.results[0]);
+          res.render('spacecraft', context);
+        });
     });
 });
 

@@ -66,7 +66,7 @@
                 <th></th>
                 <th>First Name</th>
                 <th>Last Name</th>
-                <th>Bith Date</th>
+                <th>Birth Date</th>
                 <th>Death Date</th>
                 <th>Country</th>
                 <th>Edit / Delete</th>
@@ -75,7 +75,7 @@
             <tbody id="rowgroup">
                 {{#each results}}
                 <tr>
-                    <td><button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">></button></td>
+                    <td><button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapse-{{astronaut_id}}" aria-expanded="false" aria-controls="collapse-{{astronaut_it}}">></button></td>
                       <td>{{astronaut_id}} {{first_name}}</td>
                       <td>{{last_name}}</td>
                       <td>{{birth_date}}</td>
@@ -86,9 +86,10 @@
                 </tr>
                 <tr>
                     <td colspan="8">
-                        <div class="collapse" id="collapseExample">
+                        <div class="collapse" id="collapse-{{astronaut_id}}">
                           <div class="card card-body">
                               <ul>
+                                  <!-- many-to-many relationship -->
                                   <li>Apollo 11
                               </ul>
                           </div>

@@ -76,7 +76,7 @@
             <tbody id="rowgroup">
                 {{#each results}}
                 <tr>
-                    <td><button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">></button></td>
+                    <td><button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapse-{{mission_id}}" aria-expanded="false" aria-controls="collapse-{{mission_id}}">></button></td>
                       <td>{{mission_id}} {{dname}}</td>
                       <td>{{sname}}</td>
                       <td>{{launch_date}}</td>
@@ -88,8 +88,9 @@
                 </tr>
                 <tr>
                     <td colspan="8">
-                        <div class="collapse" id="collapseExample">
+                        <div class="collapse" id="collapse-{{mission_id}}">
                           <div class="card card-body">
+                              <!-- Many-to-many relationship -->
                               <ul>
                                   <li>Neil Armstrong
                                   <li>Buzz Aldrin
