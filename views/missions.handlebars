@@ -118,11 +118,11 @@
         </button>
       </div>
       <div class="modal-body">
-          <form id="addRow" name="addRow"  method="post" action"/destinations>
+          <form id="mission-add" name="mission-add"  method="post" action"/missions>
             <input type="hidden" id="edit-id" name="editId">
               <div class="form-group">
                     <label for="destination_id" class="col-form-label">Destination:</label>
-                    <select class="form-control" id="destination_id">
+                    <select class="form-control" id="destination_id" name="destination_id" form="mission-add">
                         {{#each destinations}}
                           <option value="{{destination_id}}">{{name}}</option>
                         {{/each}}
@@ -130,7 +130,7 @@
               </div>
               <div class="form-group">
                     <label for="spacecraft_id" class="col-form-label">Spacecraft:</label>
-                    <select class="form-control" id="spacecraft_id">
+                    <select class="form-control" id="spacecraft_id" name="spacecraft_id" form="mission-add">
                         {{#each spacecraft}}
                           <option value="{{spacecraft_id}}">{{name}}</option>
                         {{/each}}
@@ -146,7 +146,7 @@
              </div>
             <div class="form-group">
               <label for="country_id" class="col-form-label">County</label>
-                <select class="form-control" id="country_id">
+                <select class="form-control" id="country_id" name="country_id" form="mission-add">
                       {{#each countries}}
                         <option value="{{country_id}}">{{name}}</option>
                       {{/each}}

@@ -114,15 +114,14 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="addRow" name="addRow">
-            <input type="hidden" id="edit-id" name="editId">
+        <form id="astronaut-add" name="astronaut-add" method="post" action"/astronauts">
             <div class="form-group">
                   <label for="first_name" class="col-form-label">Fist Name:</label>
                   <input type="text" class="form-control" id="first_name" name="first_name">
             </div>
             <div class="form-group">
                   <label for="last_name" class="col-form-label">Last name:</label>
-                  <input type="text" class="form-control" id="last-name" name="last_name">
+                  <input type="text" class="form-control" id="last_name" name="last_name">
             </div>
            <div class="form-group">
              <label for="birth_date" class="col-form-label">Birth Date:</label>
@@ -133,17 +132,17 @@
              <input type="date" class="form-control" id="death_date" name="death_date">
            </div>
           <div class="form-group">
-            <label for="country_id" class="col-form-label">County</label>
-            <select class="form-control" id="country_id">
-                  {{#each countries}}
-                    <option value="{{country_id}}">{{name}}</option>
-                  {{/each}}
-              </select>
+              <label for="country" class="col-form-label">Country</label>
+                  <select class="form-control" id="country_id" name="country_id" form="astronaut-add">
+                    {{#each countries}}
+                      <option value="{{country_id}}">{{name}}</option>
+                    {{/each}}
+                </select>
           </div>
         </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-secondary">Add</button>
+            <input type="submit" class="btn btn-secondary">
           </div>
         </form>
       </div>
