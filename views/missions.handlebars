@@ -25,7 +25,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/missions_to_astronauts">Missions to Astronauts</a>
-      </li>          
+      </li>
       <!--
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -82,7 +82,7 @@
                 <tr>
                     <td><button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapse-{{mission_id}}" aria-expanded="false" aria-controls="collapse-{{mission_id}}">></button></td>
                       <td style="display:none;">{{mission_id}}</td>
-                      <td>{{sname}}</td>                      
+                      <td>{{sname}}</td>
                       <td>{{dname}}</td>
                       <td>{{launch_date}}</td>
                       <td>{{end_date}}</td>
@@ -96,10 +96,7 @@
                         <div class="collapse" id="collapse-{{mission_id}}">
                           <div class="card card-body">
                               <!-- Many-to-many relationship -->
-                              <ul>
-                                  <li>Neil Armstrong
-                                  <li>Buzz Aldrin
-                                  <li>Michael Collins
+                              <ul id="MA-{{mission_id}}">
                               </ul>
                           </div>
                         </div>
@@ -122,7 +119,7 @@
         </button>
       </div>
       <div class="modal-body">
-          <form id="mission-add" name="mission-add"  method="post" action"/missions>
+          <form id="mission-add" name="mission-add"  method="post" action"/missions">
             <input type="hidden" id="edit-id" name="editId">
               <div class="form-group">
                     <label for="destination_id" class="col-form-label">Destination:</label>
@@ -254,3 +251,48 @@
         </div>
       </div>
     </div>
+    <script type="text/javascript">
+          var myAPI = 'http://flip1.engr.oregonstate.edu:7798/ma';
+          loadEvent().then(processLoadEvent, errorHandler);
+
+          function loadEvent() {
+              return new Promise(function(resolve, reject) {
+                  var req = new XMLHttpRequest();
+                  req.open('GET', myAPI, true);
+                  req.onreadystatechange = function() {
+                      if (req.readyState === 4) {
+                          if (req.status === 200) {
+                              console.log("req done successfully");
+                              resolve(JSON.parse(req.responseText));
+                          } else {
+                              reject(req.status);
+                              console.log("req failed");
+                          }
+                      } else {
+                          console.log("req processing going on");
+                      }
+                  }
+                  req.send(null);
+              });
+          }
+
+          function processLoadEvent(elements) {
+             setTimeout(function() {
+                 console.log(elements);
+                 //Add New Row
+                 for (var i in elements) {
+                     console.log(elements[i]);
+                     var myElement = document.getElementById("MA-" + elements[i].mission_id);
+                     if(myElement){
+                          var newLI = document.createElement("li");
+                          newLI.innerHTML = "" + elements[i].first_name + " " + elements[i].last_name;
+                          myElement.appendChild(newLI);
+                     }
+
+                 }
+             }, 0);
+          }
+          function errorHandler(statusCode){
+           console.log("failed with status", status);
+          }
+      </script>

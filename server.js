@@ -1,4 +1,5 @@
-//Robert Jones - Activity Tracker
+//Team Select Starrs - Group 10
+//Robert Jones & Lauren Briese
 
 var express = require('express');
 var mysql = require('./dbcon.js');
@@ -429,6 +430,54 @@ app.get('/astronauts/:country_id',function(req,res,next){
     });
 });
 
+// Get Mission to Astronaut relationship
+// This is used for an AJAX call by Missions page (no handlebars)
+app.get('/ma',function(req,res,next){
+    var context = {};
+    //First get the country id's and names for the sort drop down box.
+
+        mysql.pool.query('SELECT A1.astronaut_id AS astronaut_id, '+
+                            'A1.first_name AS first_name, '+
+                            'A1.last_name AS last_name, '+
+                            'M1.mission_id AS mission_id '+
+                            'FROM astronaut AS A1 '+
+                            'INNER JOIN mission_to_astronaut AS MA1 ON A1.astronaut_id = MA1.astronaut_id '+
+                            'INNER JOIN mission AS M1 ON MA1.mission_id = M1.mission_id', function(err, rows, fields){
+          if(err){
+            next(err);
+            return;
+          }
+          context.results = rows;
+          console.log("Select Mission to Astronauts " + context.results[0]);
+          res.send(JSON.stringify(rows));
+        });
+});
+
+//Get Astronaut to Mission relationship
+// This is used for an AJAX call by Astronauts page.
+app.get('/am',function(req,res,next){
+    var context = {};
+        mysql.pool.query('SELECT M1.mission_id AS mission_id, '+
+                            'A1.astronaut_id AS astronaut_id, '+
+                            'DATE_FORMAT(M1.launch_date, "%Y-%m-%d") AS launch_date, '+
+                            'DATE_FORMAT(M1.end_date, "%Y-%m-%d") AS end_date, '+
+                            'D1.name AS dname, '+
+                            'S1.name AS sname '+
+                            'FROM mission AS M1 '+
+                            'INNER JOIN mission_to_astronaut AS MA1 ON M1.mission_id = MA1.mission_id '+
+                            'INNER JOIN astronaut AS A1 ON MA1.astronaut_id = A1.astronaut_id '+
+                            'INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
+                            'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
+          if(err){
+            next(err);
+            return;
+          }
+          context.results = rows;
+          console.log("Select Mission to Astronauts " + context.results[0]);
+          res.send(JSON.stringify(rows));
+        });
+});
+
 app.get('/spacecraft',function(req,res,next){
     var context = {};
     //First get the country id's and names for the sort drop down box.
@@ -582,7 +631,7 @@ app.get('/missions_to_astronauts',function(req,res,next){
 //            console.log("Number of records deleted: " + result.affectedRows);
 //            res.send(JSON.stringify(req.body['astronaut_id']));
 //        });
-// 
+//
 //    }
 //  });
 
