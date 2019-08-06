@@ -1,0 +1,152 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand" href="/">Space Missions</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Home </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/missions">Missions</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/astronauts">Astronauts</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/spacecraft">Spacecraft</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/destinations">Space Destinations</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/countries">Countries</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/missions_to_astronauts">Missions to Astronauts<span class="sr-only">(current)</span></a>
+      </li>      
+      <!--
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown link
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+  -->
+    </ul>
+  </div>
+</nav>
+<br>
+<div class="col-md-8">
+    <div class="jumbotron pt-4">
+        <div class="container-fluid row">
+            <div class="col-md-11"><h2 class="text-secondary">Missions to Astronauts</h2></div>
+            <div class="col-md-1"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">Add</button></div>
+        </div>
+
+        <hr />
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Mission ID</th>
+                <th>Astronaut ID</th>
+                <th>Edit / Delete</th>
+            </tr>
+            </thead>
+            <tbody id="rowgroup">
+                {{#each results}}
+                <tr>
+                      <td>{{mission_id}}</td>
+                      <td>{{astronaut_id}}</td>
+                    <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">Delete</button></td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addModalLabel">Mission to Astronaut Relationship</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form id="mission-to-astronaut-add" name="mission-to-astronaut-add"  method="post" action"/missions_to_astronauts">
+            <input type="hidden" id="edit-id" name="editId">
+              <div class="form-group">
+                    <label for="mission_id" class="col-form-label">Mission:</label>
+                    <select class="form-control" id="mission_id" name="mission_id" form="mission-to-astronaut-add">
+                        {{#each missions}}
+                          <option value="{{mission_id}}">{{mission_id}}</option>
+                        {{/each}}
+                    </select>
+              </div>
+              <div class="form-group">
+                    <label for="astronaut_id" class="col-form-label">Astronaut:</label>
+                    <select class="form-control" id="astronaut_id" name="astronaut_id" form="mission-to-astronaut-add">
+                        {{#each astronauts}}
+                          <option value="{{astronaut_id}}">{{first_name}} {{last_name}}</option>
+                        {{/each}}
+                    </select>
+              </div>              
+        </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <input type="submit" class="btn btn-secondary">
+          </div>
+          </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT MODAL -->
+  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Edit Mission to Astronaut Relationships</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="editRow" name="editRow"  method="post" action"/missions_to_astronauts">
+            <input type="hidden" id="edit-id" name="editId">
+              <div class="form-group">
+                    <label for="destination_id" class="col-form-label">Mission ID:</label>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {{#each destinations}}
+                          <div class="dropdown-item">{{name}}</div>
+                        {{/each}}
+                    </div>
+              </div>
+              <div class="form-group">
+                    <label for="spacecraft_id" class="col-form-label">Astronaut ID:</label>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {{#each spacecraft}}
+                          <div class="dropdown-item">{{name}}</div>
+                        {{/each}}
+                    </div>
+              </div>
+        </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <input type="submit" class="btn btn-secondary">
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>

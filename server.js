@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 7798);
+app.set('port', 7698);
 
 //https://enable-cors.org/server_expressjs.html
 app.use(function(req, res, next) {
@@ -235,6 +235,33 @@ app.post('/missions', function(req, res, next){
               });
           });
       });
+});
+
+/* Insert new mission to astronaut relationship */
+app.post('/missions_to_astronauts', function(req, res, next){
+      var pParams = [];
+      if (req.body['mission_id'] == '' || req.body['astronaut_id'] == '') {
+          res.status(500).send({ error: "Empty mission or astronaut field." });
+      } else {
+      pParams.push(req.body['mission_id']);
+      pParams.push(req.body['astronaut_id']);
+      console.log(pParams);
+      mysql.pool.query("INSERT INTO mission_to_astronaut (mission_id, astronaut_id) VALUES (?)", [pParams], function(err, result, fields){
+          if(err) throw err;
+          console.log("Number of records inserted: " + result.affectedRows + " with id " + result.insertId);
+
+          var context = {};
+          mysql.pool.query('SELECT * FROM mission_to_astronaut', function(err, rows, fields){
+            if(err){
+              next(err);
+              return;
+            }
+            context.results = rows;
+            console.log("Select Destinations [0...i]: " + context.results[0]);
+            res.render('missions_to_astronauts', context);
+          });
+      });
+    }
 });
 
 
@@ -514,20 +541,50 @@ app.get('/spacecraft/:country_id',function(req,res,next){
 });
 
 
+app.get('/missions_to_astronauts',function(req,res,next){
+    var context = {};
+    //First get the mission id's and names for the add menu drop down box
+    mysql.pool.query('SELECT mission_id from mission', function(err, rows, fields){
+      if(err){
+        next(err);
+        return;
+      }
+      context.missions = rows;
+      //Next get astronaut_id for add menu drop down box
+      mysql.pool.query('SELECT astronaut_id, first_name, last_name name FROM astronaut', function(err, rows, fields){
+        if(err){
+          next(err);
+          return;
+        }
+        context.astronauts = rows;
+                mysql.pool.query('SELECT mission_id, astronaut_id FROM mission_to_astronaut', function(err, rows, fields){
+                  if(err){
+                    next(err);
+                    return;
+                  }
+                  context.results = rows;
+                  console.log("Select Missions to Astronauts [0...i]: " + context.results[0]);
+                  res.render('missions_to_astronauts', context);
+                });
+            });
+    });
+});
+
 /****************************
 *         DELETE
 *****************************/
-// app.post('/delete', function(req, res, next){
-//   if (req.body['request'] == "delete") {
-//       console.log("delete " + req.body['id']);
-//       mysql.pool.query('DELETE FROM workouts WHERE id=? ',[req.body['id']], function(err, result) {
-//           if (err) throw err;
-//           console.log("Number of records deleted: " + result.affectedRows);
-//           res.send(JSON.stringify(req.body['id']));
-//       });
-//
-//   }
-// });
+/*Delete specific astronaut*/
+// app.post('/astronauts', function(req, res, next){
+//    if (req.body['request'] == "delete") {
+//        console.log("delete " + req.body['astronaut_id']);
+//        mysql.pool.query('DELETE FROM astronaut WHERE astronaut_id=? ',[req.body['astronaut_id']], function(err, result) {
+//            if (err) throw err;
+//            console.log("Number of records deleted: " + result.affectedRows);
+//            res.send(JSON.stringify(req.body['astronaut_id']));
+//        });
+// 
+//    }
+//  });
 
 /****************************
 *         UPDATE / EDIT

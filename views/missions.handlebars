@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <a class="navbar-brand" href="index.html">Space Missions</a>
+  <a class="navbar-brand" href="/">Space Missions</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -23,6 +23,9 @@
       <li class="nav-item">
         <a class="nav-link" href="/countries">Countries</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/missions_to_astronauts">Missions to Astronauts</a>
+      </li>          
       <!--
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -65,8 +68,8 @@
             <thead>
             <tr>
                 <th></th>
-                <th>Destination</th>
                 <th>Spacecraft</th>
+                <th>Destination</th>
                 <th>Launch Date</th>
                 <th>End Date</th>
                 <th>Success</th>
@@ -78,8 +81,9 @@
                 {{#each results}}
                 <tr>
                     <td><button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapse-{{mission_id}}" aria-expanded="false" aria-controls="collapse-{{mission_id}}">></button></td>
-                      <td>{{mission_id}} {{dname}}</td>
-                      <td>{{sname}}</td>
+                      <td style="display:none;">{{mission_id}}</td>
+                      <td>{{sname}}</td>                      
+                      <td>{{dname}}</td>
                       <td>{{launch_date}}</td>
                       <td>{{end_date}}</td>
                       <td>{{msuccess}}</td>
