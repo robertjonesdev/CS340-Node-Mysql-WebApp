@@ -25,7 +25,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/missions_to_astronauts">Missions to Astronauts</a>
-      </li>          
+      </li>
       <!--
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -67,7 +67,8 @@
             <tr>
                 <th>Name</th>
                 <th>Distance From Earth (mi.)</th>
-                <th>Edit / Delete</th>
+                <th>Edit</th>
+                <th>Delete</th>
             </tr>
             </thead>
             <tbody id="rowgroup">
@@ -76,10 +77,9 @@
                       <td style="display:none;">{{destination_id}}</td>
                       <td>{{name}}</td>
                       <td>{{distance_from_earth}}</td>
-                    <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
-                    <button type="button" class="btn btn-primary btn-sm">Delete</button></td>
+                      <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">Edit</button></td>
+                      <td><form method="get" action="/destinations/delete/{{destination_id}}"><button type="submit" class="btn btn-primary btn-sm">Delete</button></form></td>
                 </tr>
-
                 {{/each}}
             </tbody>
         </table>

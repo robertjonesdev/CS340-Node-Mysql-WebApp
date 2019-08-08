@@ -615,69 +615,78 @@ app.get('/missions_to_astronauts',function(req,res,next){
                   console.log("Select Missions to Astronauts [0...i]: " + context.results[0]);
                   res.render('missions_to_astronauts', context);
                 });
-            });
+        });
     });
 });
 
 /****************************
 *         DELETE
 *****************************/
-/*Delete specific astronaut*/
+/*Delete specific mission*/
 app.get('/missions/delete/:mission_id', function(req, res, next){
 
        console.log("delete " + req.body['mission_id']);
        mysql.pool.query('DELETE FROM mission WHERE mission_id=? ', req.params.mission_id, function(err, result) {
            if (err) throw err;
            console.log("Number of records deleted: " + result.affectedRows);
-
-       var context = {};
-       //First get the country id's and names for the sort drop down box.
-       mysql.pool.query('SELECT country_id, name FROM country_of_origin', function(err, rows, fields){
-         if(err){
-           next(err);
-           return;
-         }
-         context.countries = rows;
-         //Next get destinations for add menu drop down box
-         mysql.pool.query('SELECT destination_id, name FROM destination', function(err, rows, fields){
-           if(err){
-             next(err);
-             return;
-           }
-           context.destinations = rows;
-           //Next get the spacecrafts for the add menu dro down box
-           mysql.pool.query('SELECT spacecraft_id, name FROM spacecraft', function(err, rows, fields){
-             if(err){
-               next(err);
-               return;
-             }
-             context.spacecraft = rows;
-                 //Finally get missions
-                   mysql.pool.query('SELECT M1.mission_id AS mission_id, '+
-                                       'DATE_FORMAT(M1.launch_date, "%Y-%m-%d") AS launch_date, '+
-                                       'DATE_FORMAT(M1.end_date, "%Y-%m-%d") AS end_date, '+
-                                       'M1.success AS msuccess, '+
-                                       'D1.name AS dname, '+
-                                       'C1.name AS cname, '+
-                                       'S1.name AS sname '+
-                                       'FROM mission AS M1 '+
-                                       'INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
-                                       'INNER JOIN country_of_origin AS C1 ON M1.country_id = C1.country_id '+
-                                       'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
-                     if(err){
-                       next(err);
-                       return;
-                     }
-                     context.results = rows;
-                     console.log("Select Missions [0...i]: " + context.results[0]);
-                     res.render('missions', context);
-                   });
-               });
-           });
-       });
-
+           res.redirect('/missions');
       });
  });
+
+/*Delete specific astronaut*/
+app.get('/astronauts/delete/:astronaut_id', function(req, res, next){
+
+    console.log("delete " + req.body['astronaut_id']);
+    mysql.pool.query('DELETE FROM astronaut WHERE astronaut_id=? ', req.params.astronaut_id, function(err, result) {
+        if (err) throw err;
+        console.log("Number of records deleted: " + result.affectedRows);
+        res.redirect('/astronauts');
+   });
+});
+
+/*Delete specific spacecraft*/
+app.get('/spacecraft/delete/:spacecraft_id', function(req, res, next){
+
+     console.log("delete " + req.body['spacecraft_id']);
+     mysql.pool.query('DELETE FROM spacecraft WHERE spacecraft_id=? ', req.params.spacecraft_id, function(err, result) {
+         if (err) throw err;
+         console.log("Number of records deleted: " + result.affectedRows);
+         res.redirect('/spacecraft');
+    });
+});
+
+/*Delete specific space destination*/
+app.get('/destination/delete/:destination_id', function(req, res, next){
+
+     console.log("delete " + req.body['destination_id']);
+     mysql.pool.query('DELETE FROM destination WHERE destination_id=? ', req.params.destination_id, function(err, result) {
+         if (err) throw err;
+         console.log("Number of records deleted: " + result.affectedRows);
+         res.redirect('/destinations');
+    });
+});
+
+/*Delete specific space destination*/
+app.get('/countries/delete/:country_id', function(req, res, next){
+
+     console.log("delete " + req.body['country_id']);
+     mysql.pool.query('DELETE FROM country_of_origin WHERE country_id=? ', req.params.country_id, function(err, result) {
+         if (err) throw err;
+         console.log("Number of records deleted: " + result.affectedRows);
+         res.redirect('/countries');
+    });
+});
+
+/*Delete specific mission-to-astronaut */
+app.get('/missions_to_astronauts/delete/:mission_id/:astronaut_id', function(req, res, next){
+
+     console.log("delete " + req.body['country_id']);
+     mysql.pool.query('DELETE FROM mission_to_astronaut WHERE mission_id=? AND astronaut_id=?', [req.params.mission_id, req.params.astronaut_id], function(err, result) {
+         if (err) throw err;
+         console.log("Number of records deleted: " + result.affectedRows);
+         res.redirect('/mission_to_astronaut');
+    });
+});
 
 /****************************
 *         UPDATE / EDIT
