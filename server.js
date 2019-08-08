@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port', 7698);
+app.set('port', 7798);
 
 //https://enable-cors.org/server_expressjs.html
 app.use(function(req, res, next) {
@@ -623,17 +623,61 @@ app.get('/missions_to_astronauts',function(req,res,next){
 *         DELETE
 *****************************/
 /*Delete specific astronaut*/
-// app.post('/astronauts', function(req, res, next){
-//    if (req.body['request'] == "delete") {
-//        console.log("delete " + req.body['astronaut_id']);
-//        mysql.pool.query('DELETE FROM astronaut WHERE astronaut_id=? ',[req.body['astronaut_id']], function(err, result) {
-//            if (err) throw err;
-//            console.log("Number of records deleted: " + result.affectedRows);
-//            res.send(JSON.stringify(req.body['astronaut_id']));
-//        });
-//
-//    }
-//  });
+app.get('/missions/delete/:mission_id', function(req, res, next){
+
+       console.log("delete " + req.body['mission_id']);
+       mysql.pool.query('DELETE FROM mission WHERE mission_id=? ', req.params.mission_id, function(err, result) {
+           if (err) throw err;
+           console.log("Number of records deleted: " + result.affectedRows);
+
+       var context = {};
+       //First get the country id's and names for the sort drop down box.
+       mysql.pool.query('SELECT country_id, name FROM country_of_origin', function(err, rows, fields){
+         if(err){
+           next(err);
+           return;
+         }
+         context.countries = rows;
+         //Next get destinations for add menu drop down box
+         mysql.pool.query('SELECT destination_id, name FROM destination', function(err, rows, fields){
+           if(err){
+             next(err);
+             return;
+           }
+           context.destinations = rows;
+           //Next get the spacecrafts for the add menu dro down box
+           mysql.pool.query('SELECT spacecraft_id, name FROM spacecraft', function(err, rows, fields){
+             if(err){
+               next(err);
+               return;
+             }
+             context.spacecraft = rows;
+                 //Finally get missions
+                   mysql.pool.query('SELECT M1.mission_id AS mission_id, '+
+                                       'DATE_FORMAT(M1.launch_date, "%Y-%m-%d") AS launch_date, '+
+                                       'DATE_FORMAT(M1.end_date, "%Y-%m-%d") AS end_date, '+
+                                       'M1.success AS msuccess, '+
+                                       'D1.name AS dname, '+
+                                       'C1.name AS cname, '+
+                                       'S1.name AS sname '+
+                                       'FROM mission AS M1 '+
+                                       'INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
+                                       'INNER JOIN country_of_origin AS C1 ON M1.country_id = C1.country_id '+
+                                       'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
+                     if(err){
+                       next(err);
+                       return;
+                     }
+                     context.results = rows;
+                     console.log("Select Missions [0...i]: " + context.results[0]);
+                     res.render('missions', context);
+                   });
+               });
+           });
+       });
+
+      });
+ });
 
 /****************************
 *         UPDATE / EDIT

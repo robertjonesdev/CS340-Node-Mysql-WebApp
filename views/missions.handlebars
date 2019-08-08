@@ -89,7 +89,9 @@
                       <td>{{msuccess}}</td>
                       <td>{{cname}}</td>
                     <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">Edit</button>
-                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">Delete</button></td>
+                      <form method="get" action="/missions/delete/{{mission_id}}">
+                          <button type="submit" class="btn btn-primary btn-sm">Delete</button>
+                      </form></td>
                 </tr>
                 <tr>
                     <td colspan="8">
