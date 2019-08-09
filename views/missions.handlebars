@@ -82,14 +82,14 @@
                 {{#each results}}
                 <tr>
                     <td><button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapse-{{mission_id}}" aria-expanded="false" aria-controls="collapse-{{mission_id}}">></button></td>
-                      <td style="display:none;">{{mission_id}}</td>
+                      <td style="display:none;" id="id-">{{mission_id}}</td>
                       <td>{{sname}}</td>
                       <td>{{dname}}</td>
                       <td>{{launch_date}}</td>
                       <td>{{end_date}}</td>
                       <td>{{msuccess}}</td>
                       <td>{{cname}}</td>
-                      <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">Edit</button></td>
+                      <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal" id="editRow{{mission_id}}" value="{{mission_id}}" data-whatever="{{mission_id}}">Edit</button></td>
                       <td><form method="get" action="/missions/delete/{{mission_id}}"><button type="submit" class="btn btn-primary btn-sm">Delete</button></form></td>
                 </tr>
                 <tr>
@@ -192,23 +192,25 @@
           </button>
         </div>
         <div class="modal-body">
-          <form id="editRow" name="editRow"  method="post" action"/destinations">
+          <form id="editRow" name="editRow"  method="post" action"/missions/update/">
             <input type="hidden" id="edit-id" name="editId">
               <div class="form-group">
-                    <label for="destination_id" class="col-form-label">Destination:</label>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        {{#each destinations}}
-                          <div class="dropdown-item">{{name}}</div>
-                        {{/each}}
-                    </div>
+                <label for="edit-spacecraft" class="col-form-label">Spacecraft:</label>
+                <select class="form-control" id="spacecraft_id" name="spacecraft_id" form="editRow">
+                      <option value=""></option>
+                    {{#each spacecraft}}
+                      <option value="{{spacecraft_id}}">{{name}}</option>
+                    {{/each}}
+                </select>
               </div>
               <div class="form-group">
-                    <label for="spacecraft_id" class="col-form-label">Spacecraft:</label>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        {{#each spacecraft}}
-                          <div class="dropdown-item">{{name}}</div>
-                        {{/each}}
-                    </div>
+                  <label for="edit-destination" class="col-form-label">Destination:</label>
+                  <select class="form-control" id="destination_id" name="destination_id" form="editRow">
+                        <option value""></option>
+                      {{#each destinations}}
+                        <option value="{{destination_id}}">{{name}}</option>
+                      {{/each}}
+                  </select>
               </div>
              <div class="form-group">
                <label for="launch_date" class="col-form-label">Launch Date:</label>
@@ -216,15 +218,16 @@
              </div>
              <div class="form-group">
                <label for="end_date" class="col-form-label">End Date:</label>
-               <input type="date" class="form-control" id="end-date" name="end_date">
+               <input type="date" class="form-control" id="end_date" name="end_date">
              </div>
             <div class="form-group">
-              <label for="country_id" class="col-form-label">County</label>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <label for="country_id" class="col-form-label">Country</label>
+                  <select class="form-control" id="country_id" name="country_id" form="editRow">
+                        <option value=""></option>
                       {{#each countries}}
-                        <div class="dropdown-item">{{name}}</div>
+                        <option value="{{country_id}}">{{name}}</option>
                       {{/each}}
-                  </div>
+                  </select>
             </div>
             <div class="form-group">
               <fieldset class="form-group align-items-center">
@@ -252,7 +255,10 @@
         </div>
       </div>
     </div>
+
+
     <script type="text/javascript">
+        /* Onload AJAX call for mission to astronaut relationships */
           var myAPI = 'http://flip1.engr.oregonstate.edu:7798/ma';
           loadEvent().then(processLoadEvent, errorHandler);
 
@@ -296,4 +302,36 @@
           function errorHandler(statusCode){
            console.log("failed with status", status);
           }
+      </script>
+<!--
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
+
+      <script>
+          // Source code for Bootstrap modal adapted from :
+          // https://getbootstrap.com/docs/4.0/components/modal/
+          $('#editModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('.modal-title').text('Edit Mission # ' + recipient)
+
+            document.editRow.editId.value           = recipient;
+            document.editRow.spacecraft_id.value    = document.getElementById('elem-' + recipient + '-spacecraft_id').innerHTML;
+            document.editRow.destination_id.value   = Number(document.getElementById('elem-' + recipient + '-').innerHTML);
+            document.editRow.launch_date.value      = Number(document.getElementById('elem-' + recipient + '-weight').innerHTML);
+            document.editRow.end_date.value         =  document.getElementById('elem-' + recipient + '-date').innerHTML;
+            if (document.getElementById('elem-'+recipient+'-success').innerHTML == "lbs"){
+                  document.editRow.editLbs[0].checked = true;
+                  document.editRow.editLbs[1].checked = false;
+            }else {
+                document.editRow.editLbs[1].checked = true;
+                document.editRow.editLbs[0].checked = false;
+            }
+
+          })
       </script>
