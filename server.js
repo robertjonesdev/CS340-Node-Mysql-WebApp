@@ -587,50 +587,19 @@ app.post('/missions/edit', function(req, res, next){
       pParams.push(Number(req.body['spacecraft_id']));
       pParams.push(Number(req.body['mission_id']));
       console.log(pParams);
-      mysql.pool.query("UPDATE mission SET launch_date=?, end_date=?, success=?, destination_id=?, country_id=?, spacecraft_id=? WHERE mission_id=?", [pParams], function(err, result, fields){
+      mysql.pool.query('UPDATE mission SET '+
+                          'launch_date=?, '+
+                          'end_date=?, '+
+                          'success=?, '+
+                          'destination_id=?, '+
+                          'country_id=?, '+
+                          'spacecraft_id=? '+
+                          'WHERE mission_id=?', [pParams], function(err, result, fields){
           if(err) throw err;
           console.log("Number of records updated: " + result.affectedRows + " with id " + result.insertId);
           res.redirect('/missions');
       });
 });
-
-// app.post('/edit', function(req, res, next){
-//    if (req.body['request'] == 'edit') {
-//       console.log("Edit request for ID #: " + req.body['id']);
-//       if (req.body['name'] == '') {
-//           res.status(500).send({ error: "Empty name field." });
-//       } else {
-//       mysql.pool.query("SELECT * FROM workouts WHERE id=?", [Number(req.body['id'])], function(err, result){
-//         if(err){
-//           next(err);
-//           return;
-//         }
-//         console.log("Results affected: " + result.length);
-//         if (result.length == 1) {
-//           var curVals = result[0];
-//           let sql = "UPDATE workouts SET name = ?, reps = ?, weight = ?, date = ?, lbs = ? WHERE id = ?";
-//           let data =  [req.body['name'] || curVals.name, Number(req.body['reps']) || Number(curVals.reps), Number(req.body['weight']) ||
-//                 Number(curVals.weight), req.body['date'] || curVals.date, Number(req.body['lbs']), Number(req.body['id'])];
-//           mysql.pool.query(sql,data, function(err, result, fields){
-//                 if(err){
-//                   next(err);
-//                   return;
-//                 }
-//             mysql.pool.query('SELECT * FROM workouts WHERE id =' + req.body['id'], function(err, rows, fields){
-//               if(err){
-//                 next(err);
-//                 return;
-//               }
-//               res.send(JSON.stringify(rows));
-//             });
-//           });
-//         } else {
-//             console.log("Edit error");
-//         }
-//       });
-//      }
-//  }
-//  });
 
 /****************************
 *   SQL Connection Status
