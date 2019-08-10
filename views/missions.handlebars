@@ -26,25 +26,13 @@
       <li class="nav-item">
         <a class="nav-link" href="/missions_to_astronauts">Missions to Astronauts</a>
       </li>
-      <!--
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown link
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-  -->
     </ul>
   </div>
 </nav>
 <br>
 <div class="col-md-8">
-    <div class="jumbotron pt-4 m-0">
-        <div class="container-fluid row p-0 m-0">
+    <div class="jumbotron jumbotron-fluid pt-4 pl-2 pr-2">
+        <div class="container-fluid row">
             <div class="col-md-8"><h2 class="text-secondary">Space Missions</h2></div>
             <div class="col-md-3">
                 <div class="dropdown">
@@ -63,52 +51,51 @@
         </div>
 
         <hr />
-
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th></th>
-                <th>Spacecraft</th>
-                <th>Destination</th>
-                <th>Launch Date</th>
-                <th>End Date</th>
-                <th>Success</th>
-                <th>Country</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-            </thead>
-            <tbody id="rowgroup">
-                {{#each results}}
-                <tr id="row-{{mission_id}}">
-                    <td><button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapse-{{mission_id}}" aria-expanded="false" aria-controls="collapse-{{mission_id}}">></button></td>
-                      <td id="mission_id" style="display:none;">{{mission_id}}</td>
-                      <td id="{{mission_id}}_spacecraft_id" style="display:none;">{{spacecraft_id}}</td>
-                      <td id="{{mission_id}}_spacecraft_name">{{sname}}</td>
-                      <td id="{{mission_id}}_destination_id" style="display:none;">{{destination_id}}</td>
-                      <td id="{{mission_id}}_destinaion_name">{{dname}}</td>
-                      <td id="{{mission_id}}_launch_date">{{launch_date}}</td>
-                      <td id="{{mission_id}}_end_date">{{end_date}}</td>
-                      <td id="{{mission_id}}_success">{{msuccess}}</td>
-                      <td style="display:none;" id="{{mission_id}}_country_id">{{country_id}}</td>
-                      <td id="{{mission_id}}_country_name">{{cname}}</td>
-                      <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal" id="editRow{{mission_id}}" value="{{mission_id}}" data-whatever="{{mission_id}}">Edit</button></td>
-                      <td><form method="get" action="/missions/delete/{{mission_id}}"><button type="submit" class="btn btn-primary btn-sm">Delete</button></form></td>
-                </tr>
+            <table class="table table-striped">
+                <thead>
                 <tr>
-                    <td colspan="8">
-                        <div class="collapse" id="collapse-{{mission_id}}">
-                          <div class="card card-body">
-                              <!-- Many-to-many relationship -->
-                              <ul id="MA-{{mission_id}}">
-                              </ul>
-                          </div>
-                        </div>
-                    </td>
+                    <th></th>
+                    <th>Spacecraft</th>
+                    <th>Destination</th>
+                    <th>Launch Date</th>
+                    <th>End Date</th>
+                    <th>Success</th>
+                    <th>Country</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
                 </tr>
-                {{/each}}
-            </tbody>
-        </table>
+                </thead>
+                <tbody id="rowgroup">
+                    {{#each results}}
+                    <tr id="row-{{mission_id}}">
+                            <td><button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapse-{{mission_id}}" aria-expanded="false" aria-controls="collapse-{{mission_id}}">></button></td>
+                              <td id="{{mission_id}}_spacecraft_id" style="display:none;">{{spacecraft_id}}</td>
+                              <td id="{{mission_id}}_spacecraft_name">{{sname}}</td>
+                              <td id="{{mission_id}}_destination_id" style="display:none;">{{destination_id}}</td>
+                              <td id="{{mission_id}}_destinaion_name">{{dname}}</td>
+                              <td id="{{mission_id}}_launch_date">{{launch_date}}</td>
+                              <td id="{{mission_id}}_end_date">{{end_date}}</td>
+                              <td id="{{mission_id}}_success">{{msuccess}}</td>
+                              <td id="{{mission_id}}_country_id" style="display:none;">{{country_id}}</td>
+                              <td id="{{mission_id}}_country_name">{{cname}}</td>
+                              <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal" id="editRow{{mission_id}}" value="{{mission_id}}" data-whatever="{{mission_id}}">Edit</button></td>
+                              <td><form method="get" action="/missions/delete/{{mission_id}}/"><button type="submit" class="btn btn-primary btn-sm">Delete</button></form></td>
+                        </tr>
+                        <tr>
+                            <td colspan="9" class="pt-0 pb-0">
+                                <div class="collapse pt-0" id="collapse-{{mission_id}}">
+                                  <div class="card card-body">
+                                      <!-- Many-to-many relationship -->
+                                      Crew Members:
+                                      <ul id="MA-{{mission_id}}">
+                                      </ul>
+                                  </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
     </div>
 </div>
 
@@ -249,7 +236,7 @@
         </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <input type="submit" class="btn btn-secondary" form="editRow">
+            <input type="submit" class="btn btn-secondary" form="editRow" value="Save">
           </div>
           </form>
         </div>
@@ -339,4 +326,4 @@
       </script>
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

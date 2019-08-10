@@ -268,7 +268,8 @@ router.get('/astronauts',function(req,res,next){
                             'A1.last_name AS last_name, '+
                             'DATE_FORMAT(A1.birth_date, "%Y-%m-%d") AS birth_date, '+
                             'DATE_FORMAT(A1.death_date, "%Y-%m-%d", NULL) AS death_date, '+
-                            'C1.name AS cname '+
+                            'C1.name AS cname, '+
+                            'C1.country_id AS country_id '+
                             'FROM astronaut AS A1 '+
                             'INNER JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id', function(err, rows, fields){
           if(err){
@@ -283,6 +284,10 @@ router.get('/astronauts',function(req,res,next){
 });
 
 router.get('/astronauts/:country_id',function(req,res,next){
+    if(isNaN(req.params.country_id)) {
+        res.render('astronauts', context);
+    }
+    else {
     var context = {};
     //First get the country id's and names for the sort drop down box.
     mysql.pool.query('SELECT country_id, name FROM country_of_origin', function(err, rows, fields){
@@ -297,7 +302,8 @@ router.get('/astronauts/:country_id',function(req,res,next){
                             'A1.last_name AS last_name, '+
                             'DATE_FORMAT(A1.birth_date, "%Y-%m-%d") AS birth_date, '+
                             'DATE_FORMAT(A1.death_date, "%Y-%m-%d", NULL) AS death_date, '+
-                            'C1.name AS cname '+
+                            'C1.name AS cname, '+
+                            'C1.country_id AS country_id '+
                             'FROM astronaut AS A1 '+
                             'INNER JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id ' +
                             'WHERE C1.country_id = ' + req.params.country_id, function(err, rows, fields){
@@ -310,6 +316,7 @@ router.get('/astronauts/:country_id',function(req,res,next){
           res.render('astronauts', context);
         });
     });
+    }
 });
 
 // Get Mission to Astronaut relationship
@@ -507,7 +514,7 @@ router.get('/missions_to_astronauts',function(req,res,next){
 /*Delete specific mission*/
 router.get('/missions/delete/:mission_id', function(req, res, next){
 
-       console.log("delete " + req.body['mission_id']);
+       console.log("delete " + req.params.mission_id);
        mysql.pool.query('DELETE FROM mission WHERE mission_id=? ', req.params.mission_id, function(err, result) {
            if (err) throw err;
            console.log("Number of records deleted: " + result.affectedRows);
@@ -518,7 +525,7 @@ router.get('/missions/delete/:mission_id', function(req, res, next){
 /*Delete specific astronaut*/
 router.get('/astronauts/delete/:astronaut_id', function(req, res, next){
 
-    console.log("delete " + req.body['astronaut_id']);
+    console.log("delete " + req.params.astronaut_id);
     mysql.pool.query('DELETE FROM astronaut WHERE astronaut_id=? ', req.params.astronaut_id, function(err, result) {
         if (err) throw err;
         console.log("Number of records deleted: " + result.affectedRows);
@@ -529,7 +536,7 @@ router.get('/astronauts/delete/:astronaut_id', function(req, res, next){
 /*Delete specific spacecraft*/
 router.get('/spacecraft/delete/:spacecraft_id', function(req, res, next){
 
-     console.log("delete " + req.body['spacecraft_id']);
+     console.log("delete " + req.params.spacecraft_id);
      mysql.pool.query('DELETE FROM spacecraft WHERE spacecraft_id=? ', req.params.spacecraft_id, function(err, result) {
          if (err) throw err;
          console.log("Number of records deleted: " + result.affectedRows);
@@ -540,7 +547,7 @@ router.get('/spacecraft/delete/:spacecraft_id', function(req, res, next){
 /*Delete specific space destination*/
 router.get('/destination/delete/:destination_id', function(req, res, next){
 
-     console.log("delete " + req.body['destination_id']);
+     console.log("delete " + req.params.destination_id);
      mysql.pool.query('DELETE FROM destination WHERE destination_id=? ', req.params.destination_id, function(err, result) {
          if (err) throw err;
          console.log("Number of records deleted: " + result.affectedRows);
@@ -551,7 +558,7 @@ router.get('/destination/delete/:destination_id', function(req, res, next){
 /*Delete specific space destination*/
 router.get('/countries/delete/:country_id', function(req, res, next){
 
-     console.log("delete " + req.body['country_id']);
+     console.log("delete " + req.params.country_id);
      mysql.pool.query('DELETE FROM country_of_origin WHERE country_id=? ', req.params.country_id, function(err, result) {
          if (err) throw err;
          console.log("Number of records deleted: " + result.affectedRows);
@@ -562,7 +569,7 @@ router.get('/countries/delete/:country_id', function(req, res, next){
 /*Delete specific mission-to-astronaut */
 router.get('/missions_to_astronauts/delete/:mission_id/:astronaut_id', function(req, res, next){
 
-     console.log("delete " + req.body['country_id']);
+     console.log("delete " + req.params.mission_id + " " + req.params.astronaut_id);
      mysql.pool.query('DELETE FROM mission_to_astronaut WHERE mission_id=? AND astronaut_id=?', [req.params.mission_id, req.params.astronaut_id], function(err, result) {
          if (err) throw err;
          console.log("Number of records deleted: " + result.affectedRows);
@@ -578,7 +585,6 @@ router.post('/missions/update', function(req, res, next){
         if(err){ next(err); return; }
         if (result.length == 1) {
             var curVals = result[0];
-            console.log("cur val country id : "+ curVals.country_id);
             var parameters = [];
             parameters.push("'" + req.body['launch_date'] + "'" || curVals.launch_date);
             if (req.body['end_date'] == '') {
@@ -604,6 +610,39 @@ router.post('/missions/update', function(req, res, next){
               if(err) throw err;
               console.log("Number of records updated: " + result.affectedRows + " with id ");
               res.redirect('/missions');
+            });
+        }
+    });
+});
+
+router.post('/astronauts/update', function(req, res, next){
+    mysql.pool.query("SELECT * FROM astronaut WHERE astronaut_id=?", [Number(req.body['astronaut_id'])], function(err, result){
+        if(err){ next(err); return; }
+        if (result.length == 1) {
+            var curVals = result[0];
+            var parameters = [];
+            parameters.push("'" + req.body['first_name'] + "'" || curVals.first_name);
+            parameters.push("'" + req.body['last_name']  + "'" || curVals.last_name);
+            parameters.push("'" + req.body['birth_date'] + "'" || curVals.birth_date);
+            if (req.body['death_date'] == '') {
+                parameters.push(null);
+            }
+            else {
+                parameters.push("'" + req.body['death_date'] + "'");
+            }
+            parameters.push(Number(req.body['country_id']) || curVals.country_id);
+            parameters.push(Number(req.body['astronaut_id']) || curVals.astronaut_id);
+            console.log(parameters);
+            mysql.pool.query('UPDATE astronaut SET'+
+                              ' first_name='+ parameters[0] +
+                              ', last_name='+ parameters[1] +
+                              ', birth_date='+ parameters[2] +
+                              ', death_date='+ parameters[3] +
+                              ', country_id='+ parameters[4] +
+                              ' WHERE astronaut_id='+ parameters[5], function(err, result, fields){
+              if(err) throw err;
+              console.log("Number of records updated: " + result.affectedRows + " with id ");
+              res.redirect('/astronauts');
             });
         }
     });
