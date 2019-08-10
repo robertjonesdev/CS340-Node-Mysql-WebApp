@@ -26,24 +26,12 @@
       <li class="nav-item active">
         <a class="nav-link" href="/missions_to_astronauts">Missions to Astronauts<span class="sr-only">(current)</span></a>
       </li>
-      <!--
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown link
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-  -->
     </ul>
   </div>
 </nav>
 <br>
 <div class="col-md-8">
-    <div class="jumbotron pt-4">
+    <div class="jumbotron jumbotron-fluid pt-4">
         <div class="container-fluid row">
             <div class="col-md-11"><h2 class="text-secondary">Missions to Astronauts</h2></div>
             <div class="col-md-1"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">Add</button></div>
@@ -55,7 +43,7 @@
             <thead>
             <tr>
                 <th>Mission ID</th>
-                <th>Astronaut ID</th>
+                <th>Astronaut</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
@@ -63,8 +51,11 @@
             <tbody id="rowgroup">
                 {{#each results}}
                 <tr>
-                      <td>{{mission_id}}</td>
-                      <td>{{astronaut_id}}</td>
+                      <td id="{{mission_id}}_mission_id" style="display:none;">{{mission_id}}</td>
+                      <td id="{{astronaut_id}}_astronaut_id">{{astronaut_id}}</td>
+                      <td>{{first_name}} {{last_name}}</td>
+                      <td id="{{astronaut_id}}_first_name" style="display:none;">{{first_name}}</td>
+                      <td id="{{astronaut_id}}_last_name" style="display:none;">{{last_name}}</td>
                       <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">Edit</button></td>
                       <td><form method="get" action="/missions_to_astronauts/delete/{{mission_id}}/{{astronaut_id}}"><button type="submit" class="btn btn-primary btn-sm">Delete</button></form></td>
                 </tr>
@@ -73,7 +64,14 @@
         </table>
     </div>
 </div>
-
+<div class="col-md-8">
+<p>
+    Implementation Notes:
+    <ul>
+        <li>Best viewed on Chrome</li>
+    </ul>
+</p>
+</div>
 <!-- ADD MODAL -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">

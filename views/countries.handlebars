@@ -26,31 +26,17 @@
       <li class="nav-item">
         <a class="nav-link" href="/missions_to_astronauts">Missions to Astronauts</a>
       </li>
-      <!--
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown link
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-  -->
     </ul>
   </div>
 </nav>
 <br>
 <div class="col-md-8">
-    <div class="jumbotron pt-4">
+    <div class="jumbotron jumotron-fluid pt-4 pl-2 pr-2">
         <div class="container-fluid row">
             <div class="col-md-11"><h2 class="text-secondary">Country of Origin</h2></div>
             <div class="col-md-1"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Add</button></div>
         </div>
-
         <hr />
-
         <table class="table table-striped">
             <thead>
             <tr>
@@ -63,10 +49,9 @@
             <tbody id="rowgroup">
                 {{#each results}}
                 <tr>
-                      <td style="display:none;">{{country_id}}</td>
-                      <td>{{name}}</td>
-                      <td>{{space_agency_name}}</td>
-                      <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">Edit</button></td>
+                      <td id="{{country_id}}_name">{{name}}</td>
+                      <td id="{{country_id}}_space_agency_name">{{space_agency_name}}</td>
+                      <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal" value="{{country_id}}" data-whatever="{{country_id}}">Edit</button></td>
                       <td><form method="get" action="/countries/delete/{{country_id}}"><button type="submit" class="btn btn-primary btn-sm">Delete</button></form></td>
                 </tr>
                 {{/each}}
@@ -74,7 +59,14 @@
         </table>
     </div>
 </div>
-
+<div class="col-md-8">
+<p>
+    Implementation Notes:
+    <ul>
+        <li>Best viewed on Chrome</li>
+    </ul>
+</p>
+</div>
 <!-- Add Country Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -86,7 +78,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="addCountry" name="addCountry" method="post" action"/countries">
+        <form id="addCountry" name="addCountry" method="post" action"/countries/add/">
             <div class="form-group">
                   <label for="name" class="col-form-label">Country Name:</label>
                   <input type="text" class="form-control" id="name" name="name">
@@ -118,20 +110,20 @@
           </button>
         </div>
         <div class="modal-body">
-          <form id="editRow" name="editRow">
-              <input type="hidden" id="edit-id" name="editId">
+          <form id="editRow" name="editRow" method="post" action="/countries/update/">
+              <input type="hidden" id="country_id" name="country_id">
               <div class="form-group">
-                    <label for="edit-name" class="col-form-label">Name:</label>
-                    <input type="text" class="form-control" id="edit-name" name="editName">
+                    <label for="name" class="col-form-label">Name:</label>
+                    <input type="text" class="form-control" id="name" name="name">
               </div>
               <div class="form-group">
-                    <label for="edit-agency" class="col-form-label">Space Agency Name:</label>
-                    <input type="text" class="form-control" id="edit-agency" name="editAgency">
+                    <label for="space_agency_name" class="col-form-label">Space Agency Name:</label>
+                    <input type="text" class="form-control" id="space_agency_name" name="space_agency_name">
               </div>
           </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-              <button type="submit" class="btn btn-secondary">Save</button>
+              <input type="submit" class="btn btn-secondary" value="Save">
             </div>
           </form>
         </div>
@@ -139,5 +131,28 @@
     </div>
     <!-- END OF EDIT MODAL -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+    <script>
+        // Source code for Bootstrap modal adapted from :
+        // https://getbootstrap.com/docs/4.0/components/modal/
+        $('#editModal').on('show.bs.modal', function (event) {
+          var button = $(event.relatedTarget) // Button that triggered the modal
+          var recipient = button.data('whatever') // Extract info from data-* attributes
+
+
+          // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+
+          // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+          var modal = $(this)
+          modal.find('.modal-title').text('Edit Country # ' + recipient)
+
+
+          document.editRow.country_id.value        = recipient;
+          document.editRow.name.value              = document.getElementById(recipient + '_name').innerHTML;
+          document.editRow.space_agency_name.value = document.getElementById(recipient + '_space_agency_name').innerHTML;
+        })
+    </script>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

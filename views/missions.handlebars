@@ -75,7 +75,8 @@
                               <td id="{{mission_id}}_destinaion_name">{{dname}}</td>
                               <td id="{{mission_id}}_launch_date">{{launch_date}}</td>
                               <td id="{{mission_id}}_end_date">{{end_date}}</td>
-                              <td id="{{mission_id}}_success">{{msuccess}}</td>
+                              <td id="{{mission_id}}_success" style="display:none;">{{msuccess}}</td>
+                              <td>{{success_text}}</td>
                               <td id="{{mission_id}}_country_id" style="display:none;">{{country_id}}</td>
                               <td id="{{mission_id}}_country_name">{{cname}}</td>
                               <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal" id="editRow{{mission_id}}" value="{{mission_id}}" data-whatever="{{mission_id}}">Edit</button></td>
@@ -98,7 +99,15 @@
                 </table>
     </div>
 </div>
-
+<div class="col-md-8">
+<p>
+    Implementation Notes:
+    <ul>
+        <li>Best viewed on Chrome</li>
+        <li>Use the <button type="button" class="btn btn-primary btn-sm">></button> button to view the astronauts that served on a mission.</li>
+    </ul>
+</p>
+</div>
 <!-- ADD MODAL -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -185,7 +194,7 @@
           <form id="editRow" action="/missions/update/" name="editRow"  method="post" target="_self">
             <input type="hidden" id="mission_id" name="mission_id">
               <div class="form-group">
-                <label for="edit-spacecraft" class="col-form-label">Spacecraft:</label>
+                <label for="spacecraft_id" class="col-form-label">Spacecraft:</label>
                 <select class="form-control" id="spacecraft_id" name="spacecraft_id" form="editRow">
                     {{#each spacecraft}}
                       <option value="{{spacecraft_id}}">{{name}}</option>
@@ -193,7 +202,7 @@
                 </select>
               </div>
               <div class="form-group">
-                  <label for="edit-destination" class="col-form-label">Destination:</label>
+                  <label for="destination_id" class="col-form-label">Destination:</label>
                   <select class="form-control" id="destination_id" name="destination_id" form="editRow">
                       {{#each destinations}}
                         <option value="{{destination_id}}">{{name}}</option>
