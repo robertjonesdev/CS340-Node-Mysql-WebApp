@@ -1,8 +1,11 @@
 -- The Select Stars (Robert Jones and Lauren Briese)
--- Project Step 3: Draft Version HTML Pages & DML + DDL Files
+-- Project Step 5: Final
 
 -- Note that a colon before a variable name (for example ‘:lnameInput’) indicates unique user input.
--- astronaut
+
+-- ------------------------------------------
+--            ASTRONAUTS
+-- ------------------------------------------
 -- Add a new astronaut to the database:
 INSERT INTO astronaut (first_name, last_name, birth_date, death_date, country_id)
     VALUES (:fnameInput, :lnameInput, :bDateInput, :dDateInput, :countryInput);
@@ -39,14 +42,17 @@ SELECT A1.astronaut_id AS astronaut_id,
     INNER JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id
     WHERE C1.country_id = :country_id
 
--- country_of_origin
+-- ------------------------------------------
+--            COUNTRY OF ORIGIN
+-- ------------------------------------------
 -- Add a new country to the database:
 INSERT INTO country_of_origin (name, space_agency_name)
     VALUES (:nameInput, :agencyInput);
 
 --Update an existing country in the database:
-UPDATE country_of_origin
-    SET name = :nameInput, space_agency_name = :agencyInput
+UPDATE country_of_origin SET
+    name = :nameInput,
+    space_agency_name = :agencyInput
     WHERE (country_id  = :idInput);
 
 --Delete a country from the database
@@ -58,14 +64,17 @@ SELECT * FROM country_of_origin;
 -- SELECT the id and name of all countries:
 SELECT country_id, name FROM country_of_origin;
 
--- destination
+-- ------------------------------------------
+--            DESTINATIONS
+-- ------------------------------------------
 -- Add a new destination to the database:
 INSERT INTO destination (name, distance_from_earth)
     VALUES (:nameInput, :distanceInput);
 
 -- Update an existing destination in the database:
-UPDATE destination
-    SET name = :nameInput, distance_from_earth = :distanceInput;
+UPDATE destination SET
+    name = :nameInput,
+    distance_from_earth = :distanceInput;
     WHERE destination_id = :idInput;
 
 -- Delete a destination from the database
@@ -84,14 +93,23 @@ SELECT name, distance_from_earth FROM destination
 -- Select name and distance of all destinations by distance in ascending order
 SELECT name, distance_from_earth FROM destination
     ORDER BY distance_from_earth ASC;
--- mission
+
+
+-- ------------------------------------------
+--            MISSIONS
+-- ------------------------------------------
+
 -- Add a new mission to the database:
 INSERT INTO mission (launch_date, end_date, success, destination_id, country_id, spacecraft_id)
     VALUES (:launchInput, :endInput, :successInput, :destinationInput, :countryInput);
 
 -- Update an existing mission in the database:
-UPDATE mission
-    SET launch_date = :launchInput, end_date = :endInput, success = :successInput, destination_id = :destinationInput, country_id = :countryInput
+UPDATE mission SET
+    launch_date = :launchInput,
+    end_date = :endInput,
+    success = :successInput,
+    destination_id = :destinationInput,
+    country_id = :countryInput
     WHERE mission_id = :idInput;
 
 -- Delete a mission from the database
@@ -127,8 +145,11 @@ SELECT M1.mission_id AS mission_id,
     INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id
     WHERE C1.country_id = :country_id
 
--- mission_to_astronaut
+-- ------------------------------------------
+--            MISSION TO ASTRONAUT
+-- ------------------------------------------
 -- Note: we do not have update statements for this table. There are only two columns in the table and if someone wants to change a mission-to-astronaut relationship, they should delete the incorrect relationship and add a new one.
+
 -- Add a new mission to astronaut relationship
 INSERT INTO mission_to_astronaut
     VALUES (:missionIdInput, :astronautIdInput);
@@ -157,14 +178,21 @@ SELECT M1.mission_id AS mission_id,
 
 -- Delete a mission_to_astronaut relationship from the database:
 DELETE FROM mission_to_astronaut WHERE mission_id = :idInput;
--- spacecraft
+
+
+-- ------------------------------------------
+--            SPACECRAFT
+-- ------------------------------------------
 -- Add a new spacecraft to the database:
 INSERT INTO spacecraft (name, service_start_date, service_end_date, country_id)
     VALUES (:nameInput, startDateInput, endDateInput, countryInput);
 
 -- Update an existing spacecraft in the database:
-UPDATE spacecraft
-    SET name = :nameInput, service_start_date = :startDateInput, service_end_date = :endDateInput, country_id = :countryInput
+UPDATE spacecraft SET
+    name = :nameInput,
+    service_start_date = :startDateInput,
+    service_end_date = :endDateInput,
+    country_id = :countryInput
     WHERE spacecraft_id = :spacecraft_id;
 
 -- Delete a spacecraft from the database
@@ -179,7 +207,7 @@ SELECT S1.spacecraft_id AS spacecraft_id,
     FROM spacecraft AS S1
     INNER JOIN country_of_origin AS C1 ON S1.country_id = C1.country_id;
 
--- Select the id and name of all spacecraft:
+-- Select the id and name of all spacecraft, used for dropdown boxes:
 SELECT spacecraft_id, name FROM spacecraft;
 
 -- Select all spacecraft from a certain country:
