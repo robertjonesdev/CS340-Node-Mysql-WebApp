@@ -99,15 +99,15 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="spacecraft-add" name="spacecraft-add" method="post" action"/spacecraft">
+        <form class="needs-validation" id="spacecraft-add" name="spacecraft-add" method="post" action"/spacecraft">
             <input type="hidden" id="edit-id" name="editId">
             <div class="form-group">
                   <label for="name" class="col-form-label">Spacecraft Name:</label>
-                  <input type="text" class="form-control" id="name" name="name">
+                  <input type="text" class="form-control" id="name" name="name" required>
             </div>
            <div class="form-group">
              <label for="service_start_date" class="col-form-label">Service Start Date:</label>
-             <input type="date" class="form-control" id="service_start_date" name="service_start_date">
+             <input type="date" class="form-control" id="service_start_date" name="service_start_date" required>
            </div>
            <div class="form-group">
              <label for="service_end_date" class="col-form-label">Service End Date:</label>
@@ -144,15 +144,15 @@
           </button>
         </div>
         <div class="modal-body">
-          <form id="editRow" name="editRow" action="/spacecraft/update/" method="post" target="_self">
+          <form class="needs-validation" id="editRow" name="editRow" action="/spacecraft/update/" method="post" target="_self">
               <input type="hidden" id="spacecraft_id" name="spacecraft_id">
               <div class="form-group">
                     <label for="name" class="col-form-label">Name:</label>
-                    <input type="text" class="form-control" id="name" name="name">
+                    <input type="text" class="form-control" id="name" name="name" requied>
               </div>
               <div class="form-group">
                     <label for="service_start_date" class="col-form-label">Service Start Date:</label>
-                    <input type="date" class="form-control" id="service_start_date" name="service_start_date">
+                    <input type="date" class="form-control" id="service_start_date" name="service_start_date" requied>
               </div>
               <div class="form-group">
                     <label for="service_end_date" class="col-form-label">Service End Date:</label>
@@ -176,6 +176,28 @@
       </div>
     </div>
     <!-- END OF EDIT MODAL -->
+
+    <script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function() {
+      'use strict';
+      window.addEventListener('load', function() {
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.getElementsByClassName('needs-validation');
+        // Loop over them and prevent submission
+        var validation = Array.prototype.filter.call(forms, function(form) {
+          form.addEventListener('submit', function(event) {
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+          }, false);
+        });
+      }, false);
+    })();
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 
     <script>

@@ -81,6 +81,7 @@
     </ul>
 </p>
 </div>
+<!-- Add Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -91,15 +92,14 @@
         </button>
       </div>
       <div class="modal-body">
-          <form id="addRow" name="addRow" method="post" action"/destinations">
-              <!-- <input type="hidden" id="edit-id" name="editId"> -->
+          <form class="needs-validation" id="addRow" name="addRow" method="post" action"/destinations">
               <div class="form-group">
                     <label for="name" class="col-form-label">Destination Name:</label>
-                    <input type="text" class="form-control" id="name" name="name">
+                    <input type="text" class="form-control" id="name" name="name" required>
               </div>
               <div class="form-group">
                     <label for="distance_from_earth" class="col-form-label">Distance From Earth (mi):</label>
-                    <input type="text" class="form-control" id="distance_from_earth" name="distance_from_earth">
+                    <input type="text" class="form-control" id="distance_from_earth" name="distance_from_earth" required>
               </div>
           </div>
             <div class="modal-footer">
@@ -112,6 +112,7 @@
 
     </div>
   </div>
+  <!-- End Add Modal -->
 
   <!-- EDIT MODAL -->
   <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -124,15 +125,15 @@
           </button>
         </div>
         <div class="modal-body">
-          <form id="editRow" name="editRow" action="/destinations/update/" method="post">
+          <form class="needs-validation" id="editRow" name="editRow" action="/destinations/update/" method="post">
               <input type="hidden" id="destination_id" name="destination_id">
               <div class="form-group">
                     <label for="name" class="col-form-label">Name:</label>
-                    <input type="text" class="form-control" id="name" name="name">
+                    <input type="text" class="form-control" id="name" name="name" required>
               </div>
               <div class="form-group">
                     <label for="distance_from_earth" class="col-form-label">Distance From Earth (mi.):</label>
-                    <input type="text" class="form-control" id="distance_from_earth" name="distance_from_earth">
+                    <input type="text" class="form-control" id="distance_from_earth" name="distance_from_earth" required>
               </div>
           </div>
             <div class="modal-footer">
@@ -144,6 +145,28 @@
       </div>
     </div>
     <!-- END OF EDIT MODAL -->
+
+    <script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+    (function() {
+      'use strict';
+      window.addEventListener('load', function() {
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.getElementsByClassName('needs-validation');
+        // Loop over them and prevent submission
+        var validation = Array.prototype.filter.call(forms, function(form) {
+          form.addEventListener('submit', function(event) {
+            if (form.checkValidity() === false) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+          }, false);
+        });
+      }, false);
+    })();
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 
     <script>
