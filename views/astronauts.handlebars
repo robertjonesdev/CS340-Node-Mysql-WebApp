@@ -31,10 +31,10 @@
 </nav>
 <br>
 <div class="col-md-8">
-    <div class="jumbotron jumbotron-fluid pt-4 pl-2 pr-2">
+    <div class="jumbotron jumbotron-fluid pt-12">
         <div class="container-fluid row">
-            <div class="col-md-8"><h2 class="text-secondary">Astronauts</h2></div>
-            <div class="col-md-3">
+            <div class="col-md-6"><h2 class="text-secondary">Astronauts</h2></div>
+            <div class="col-md-2">
                 <div class="dropdown">
                   <button class="btn btn-primary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Display by Country
@@ -47,7 +47,8 @@
                   </div>
                 </div>
             </div>
-            <div class="col-md-1"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">Add</button></div>
+            <div class="col-md-2"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">New Astronaut</button></div>
+            <div class="col-md-2"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMission">Add Astronaut to Mission</button></div>            
         </div>
 
         <hr />
@@ -68,7 +69,7 @@
             <tbody id="rowgroup">
                 {{#each results}}
                 <tr>
-                    <td><button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapse-{{astronaut_id}}" aria-expanded="false" aria-controls="collapse-{{astronaut_it}}">></button></td>
+                    <td><button class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target="#collapse-{{astronaut_id}}" aria-expanded="false" aria-controls="collapse-{{astronaut_id}}">></button></td>
                       <td id="{{astronaut_id}}_astronaut_id" style="display:none;">{{astronaut_id}}</td>
                       <td id="{{astronaut_id}}_first_name">{{first_name}}</td>
                       <td id="{{astronaut_id}}_last_name">{{last_name}}</td>
@@ -80,14 +81,23 @@
                       <td><form method="get" action="/astronauts/delete/{{astronaut_id}}/"><button type="submit" class="btn btn-primary btn-sm">Delete</button></form></td>
                 </tr>
                 <tr>
-                    <td colspan="8" class="pt-0 pb-0">
+                    <td colspan="11" class="pt-0 pb-0">
                         <div class="collapse pt-0" id="collapse-{{astronaut_id}}">
                           <div class="card card-body">
                             <!-- many-to-many relationship -->
                               Missions:
                               <ul id="AM-{{astronaut_id}}">
-
                               </ul>
+                              <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle float-left" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  Add Mission
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    {{#each missions}}
+                                      <a class="dropdown-item" option="{{mission_id}}">{{spacecraft_name}} to {{destination_name}} on {{launch_date}}</a>
+                                    {{/each}}
+                                </div>
+                              </div>
                           </div>
                         </div>
                     </td>
@@ -117,9 +127,9 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="astronaut-add" name="astronaut-add" method="post" action"/astronauts">
+        <form id="astronaut-add" name="astronaut-add" method="post" action="/astronauts">
             <div class="form-group">
-                  <label for="first_name" class="col-form-label">Fist Name:</label>
+                  <label for="first_name" class="col-form-label">First Name:</label>
                   <input type="text" class="form-control" id="first_name" name="first_name">
             </div>
             <div class="form-group">
@@ -201,8 +211,40 @@
     </div>
     <!-- END OF EDIT MODAL -->
 
+<!-- ADD MISSION MODAL -->
+<div class="modal fade" id="addMission" tabindex="-1" role="dialog" aria-labelledby="addMissionLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addMissionLabel">Add Mission to Astronaut</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form id="mission-to-astronaut-add" name="mission-to-astronaut-add"  method="post" action=/astronauts/add_mission>
+            <input type="hidden" id="edit-id" name="editId">
+              <div class="form-group">
+                    <label for="mission_id" class="col-form-label">Mission:</label>
+                    <select class="form-control" id="mission_id" name="mission_id" form="mission-to-astronaut-add">
+                        {{#each missions}}
+                          <option value="{{mission_id}}">{{mission_id}}</option>
+                        {{/each}}
+                    </select>
+              </div>
+              </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                  <input type="submit" class="btn btn-secondary">
+                </div>
+                </form>
+              </div>
+         </div>
+</div>
+    <!-- END OF ADD MISSION MODAL -->
+
     <script type="text/javascript">
-        var myAPI = 'http://flip1.engr.oregonstate.edu:7798/am';
+        var myAPI = 'http://flip1.engr.oregonstate.edu:7796/am';
         loadEvent().then(processLoadEvent, errorHandler);
 
         function loadEvent() {
@@ -235,7 +277,8 @@
                    var myElement = document.getElementById("AM-" + elements[i].astronaut_id);
                    if(myElement){
                         var newLI = document.createElement("li");
-                        newLI.innerHTML = "" + elements[i].sname + " to " + elements[i].dname + " from " + elements[i].launch_date + " to " + elements[i].end_date;
+                        var ending = elements[i].mission_id + "\/" + elements[i].astronaut_id + "\/";
+                        newLI.innerHTML = "" + elements[i].sname + " to " + elements[i].dname + " from " + elements[i].launch_date + " to " + elements[i].end_date + "<form class='form-inline' method='get' action='/astronauts/delete_m2a/" + ending + "'><button type='submit' class='btn btn-primary btn-sm float-right'>Delete</button>";
                         myElement.appendChild(newLI);
                    }
 
