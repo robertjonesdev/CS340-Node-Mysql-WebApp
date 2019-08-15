@@ -83,17 +83,18 @@
                               <td><form method="get" action="/missions/delete/{{mission_id}}/"><button type="submit" class="btn btn-primary btn-sm">Delete</button></form></td>
                         </tr>
                         <tr>
-                            <td colspan="9" class="pt-0 pb-0">
+                            <td colspan="12" class="pt-0 pb-0">
                                 <div class="collapse pt-0" id="collapse-{{mission_id}}">
                                   <div class="card card-body">
                                       <!-- Many-to-many relationship -->
                                       Crew Members:
                                       <ul id="MA-{{mission_id}}">
                                       </ul>
+                                      <ul><button class="btn btn-primary btn-sm">Add Astronaut</button></ul>
                                   </div>
                                 </div>
                             </td>
-                        </tr>
+                        </tr>                     
                         {{/each}}
                     </tbody>
                 </table>
@@ -255,7 +256,7 @@
 
     <script type="text/javascript">
         /* Onload AJAX call for mission to astronaut relationships */
-          var myAPI = 'http://flip1.engr.oregonstate.edu:7798/ma';
+          var myAPI = 'http://flip1.engr.oregonstate.edu:7796/ma';
           loadEvent().then(processLoadEvent, errorHandler);
 
           function loadEvent() {
@@ -288,7 +289,8 @@
                      var myElement = document.getElementById("MA-" + elements[i].mission_id);
                      if(myElement){
                           var newLI = document.createElement("li");
-                          newLI.innerHTML = "" + elements[i].first_name + " " + elements[i].last_name;
+                          var ending = elements[i].mission_id + "\/" + elements[i].astronaut_id + "\/";
+                          newLI.innerHTML = "" + elements[i].first_name + " " + elements[i].last_name + "<form method='get' action='/missions/delete_m2a/" + ending + "'><button type='submit' class='btn btn-primary btn-sm'>Delete</button>";
                           myElement.appendChild(newLI);
                      }
 
