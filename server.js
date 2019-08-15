@@ -129,23 +129,87 @@ router.post('/missions/add', function(req, res, next){
       });
 });
 
-/* Insert new mission to astronaut relationship from astronauts page */
-router.post('/astronauts/add_mission', function(req, res, next){
+/* Insert new mission to astronaut relationship */
+router.post('/missions_to_astronauts', function(req, res, next){
       var parameters = [];
       if (req.body['mission_id'] == '' || req.body['astronaut_id'] == '') {
           res.status(500).send({ error: "Empty mission or astronaut field." });
       } else {
+      mysql.pool.query('SELECT mission_id, astronaut_id ' +
+                          'FROM mission_to_astronaut ' +
+                          'WHERE mission_id=' + req.body['mission_id'] +
+                          ' AND astronaut_id=' + req.body['astronaut_id'], function(err, rows, fields){
+      if(err){ next(err); return; }
+      if (rows.length == 0) {
       parameters.push(req.body['mission_id']);
       parameters.push(req.body['astronaut_id']);
       console.log(parameters);
       mysql.pool.query("INSERT INTO mission_to_astronaut (mission_id, astronaut_id) VALUES (?)", [parameters], function(err, result, fields){
           if(err) throw err;
           console.log("Number of records inserted: " + result.affectedRows + " with id " + result.insertId);
-          res.redirect('/astronauts');
+          res.redirect('/missions_to_astronauts');
+      });
+      } else {
+          res.redirect('/missions_to_astronauts');
+      }
       });
     }
 });
 
+/* Insert new mission to astronaut relationship */
+router.post('/am', function(req, res, next){
+      var parameters = [];
+      if (req.body['mission_id'] == '' || req.body['astronaut_id'] == '') {
+          res.status(500).send({ error: "Empty mission or astronaut field." });
+      } else {
+      mysql.pool.query('SELECT mission_id, astronaut_id ' +
+                        'FROM mission_to_astronaut ' +
+                        'WHERE mission_id=' + req.body['mission_id'] +
+                        ' AND astronaut_id=' + req.body['astronaut_id'], function(err, rows, fields){
+        if(err){ next(err); return; }
+        if (rows.length == 0) {
+          parameters.push(req.body['mission_id']);
+          parameters.push(req.body['astronaut_id']);
+          console.log(parameters);
+          mysql.pool.query("INSERT INTO mission_to_astronaut (mission_id, astronaut_id) VALUES (?)", [parameters], function(err, result, fields){
+              if(err) throw err;
+              console.log("Number of records inserted: " + result.affectedRows + " with id " + result.insertId);
+              res.redirect('/astronauts');
+          });
+      } else {
+          res.redirect('/astronauts');
+      }
+      });
+    }
+});
+
+/* Insert new mission to astronaut relationship */
+router.post('/ma', function(req, res, next){
+      var parameters = [];
+      if (req.body['mission_id'] == '' || req.body['astronaut_id'] == '') {
+          res.status(500).send({ error: "Empty mission or astronaut field." });
+      }
+      else {
+          mysql.pool.query('SELECT mission_id, astronaut_id ' +
+                            'FROM mission_to_astronaut ' +
+                            'WHERE mission_id=' + req.body['mission_id'] +
+                            ' AND astronaut_id=' + req.body['astronaut_id'], function(err, rows, fields){
+            if(err){ next(err); return; }
+            if (rows.length == 0) {
+              parameters.push(req.body['mission_id']);
+              parameters.push(req.body['astronaut_id']);
+              console.log(parameters);
+              mysql.pool.query("INSERT INTO mission_to_astronaut (mission_id, astronaut_id) VALUES (?)", [parameters], function(err, result, fields){
+                  if(err) throw err;
+                  console.log("Number of records inserted: " + result.affectedRows + " with id " + result.insertId);
+                  res.redirect('/missions');
+              });
+          } else {
+              res.redirect('/missions');
+          }
+        });
+    }
+});
 
 /*******************************************
 *       READ / SQL SELECT
@@ -173,6 +237,17 @@ router.get('/missions',function(req,res,next){
             return;
           }
           context.spacecraft = rows;
+          mysql.pool.query('SELECT A1.astronaut_id AS astronaut_id, '+
+                              'A1.first_name AS first_name, '+
+                              'A1.last_name AS last_name, '+
+                              'C1.name AS country_name '+
+                              'FROM astronaut AS A1 '+
+                              'INNER JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id', function(err, rows, fields){
+            if(err){
+              next(err);
+              return;
+            }
+            context.astronauts = rows;
               //Finally get missions
                 mysql.pool.query('SELECT M1.mission_id AS mission_id, '+
                                     'DATE_FORMAT(M1.launch_date, "%Y-%m-%d") AS launch_date, '+
@@ -196,6 +271,7 @@ router.get('/missions',function(req,res,next){
                   context.results = rows;
                   console.log("Select Missions [0...i]: " + context.results[0]);
                   res.render('missions', context);
+                  });
                 });
             });
         });
@@ -225,6 +301,18 @@ router.get('/missions/:country_id',function(req,res,next){
             return;
           }
           context.spacecraft = rows;
+          mysql.pool.query('SELECT A1.astronaut_id AS astronaut_id, '+
+                              'A1.first_name AS first_name, '+
+                              'A1.last_name AS last_name, '+
+                              'C1.name AS country_name '+
+                              'FROM astronaut AS A1 '+
+                              'INNER JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id', function(err, rows, fields){
+            if(err){
+              next(err);
+              return;
+            }
+            context.astronauts = rows;
+
               //Finally get missions
                 mysql.pool.query('SELECT M1.mission_id AS mission_id, '+
                                     'DATE_FORMAT(M1.launch_date, "%Y-%m-%d") AS launch_date, '+
@@ -249,6 +337,7 @@ router.get('/missions/:country_id',function(req,res,next){
                   context.results = rows;
                   console.log("Select Missions [0...i]: " + context.results[0]);
                   res.render('missions', context);
+                  });
                 });
             });
         });
@@ -264,23 +353,35 @@ router.get('/astronauts',function(req,res,next){
         return;
       }
       context.countries = rows;
-
-        mysql.pool.query('SELECT A1.astronaut_id AS astronaut_id, '+
-                            'A1.first_name AS first_name, '+
-                            'A1.last_name AS last_name, '+
-                            'DATE_FORMAT(A1.birth_date, "%Y-%m-%d") AS birth_date, '+
-                            'DATE_FORMAT(A1.death_date, "%Y-%m-%d", NULL) AS death_date, '+
-                            'C1.name AS cname, '+
-                            'C1.country_id AS country_id '+
-                            'FROM astronaut AS A1 '+
-                            'LEFT JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id', function(err, rows, fields){
-          if(err){
-            next(err);
-            return;
-          }
-          context.results = rows;
-          console.log("Select Astronauts [0...i]: " + context.results[0]);
-          res.render('astronauts', context);
+          mysql.pool.query('SELECT M1.mission_id AS mission_id, '+
+                              'DATE_FORMAT(M1.launch_date, "%Y-%m-%d") AS launch_date, '+
+                              'D1.name AS destination_name, '+
+                              'S1.name AS spacecraft_name '+
+                              'FROM mission AS M1 '+
+                              'INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
+                              'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
+            if(err){
+              next(err);
+              return;
+            }
+            context.missions = rows;
+            mysql.pool.query('SELECT A1.astronaut_id AS astronaut_id, '+
+                                'A1.first_name AS first_name, '+
+                                'A1.last_name AS last_name, '+
+                                'DATE_FORMAT(A1.birth_date, "%Y-%m-%d") AS birth_date, '+
+                                'DATE_FORMAT(A1.death_date, "%Y-%m-%d", NULL) AS death_date, '+
+                                'C1.name AS cname, '+
+                                'C1.country_id AS country_id '+
+                                'FROM astronaut AS A1 '+
+                                'INNER JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id', function(err, rows, fields){
+              if(err){
+                next(err);
+                return;
+              }
+              context.results = rows;
+              console.log("Select Astronauts [0...i]: " + context.results[0]);
+              res.render('astronauts', context);
+            });
         });
     });
 });
@@ -298,7 +399,18 @@ router.get('/astronauts/:country_id',function(req,res,next){
         return;
       }
       context.countries = rows;
-
+      mysql.pool.query('SELECT M1.mission_id AS mission_id, '+
+                          'DATE_FORMAT(M1.launch_date, "%Y-%m-%d") AS launch_date, '+
+                          'D1.name AS destination_name, '+
+                          'S1.name AS spacecraft_name '+
+                          'FROM mission AS M1 '+
+                          'INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
+                          'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
+        if(err){
+          next(err);
+          return;
+        }
+        context.missions = rows;
         mysql.pool.query('SELECT A1.astronaut_id AS astronaut_id, '+
                             'A1.first_name AS first_name, '+
                             'A1.last_name AS last_name, '+
@@ -316,46 +428,7 @@ router.get('/astronauts/:country_id',function(req,res,next){
           context.results = rows;
           console.log("Select Astronauts [0...i]: " + context.results[0]);
           res.render('astronauts', context);
-        });
-    });
-    }
-});
-
-router.get('/astronauts/:mission_id',function(req,res,next){
-    if(isNaN(req.params.mission_id)) {
-        res.render('astronauts', context);
-    }
-    else {
-    var context = {};
-    //First get the mission IDs and names for the sort drop down box.
-    mysql.pool.query('SELECT mission_id FROM mission', function(err, rows, fields){
-      if(err){
-        next(err);
-        return;
-      }
-      context.missions = rows;
-
-        mysql.pool.query('SELECT M1.mission_id AS mission_id, '+
-                                    'DATE_FORMAT(M1.launch_date, "%Y-%m-%d") AS launch_date, '+
-                                    'DATE_FORMAT(M1.end_date, "%Y-%m-%d") AS end_date, '+
-                                    'M1.success AS msuccess, '+
-                                    'IF(M1.success=1,"Yes","No") AS success_text, '+
-                                    'D1.name AS dname, '+
-                                    'D1.destination_id AS destination_id, '+
-                                    'C1.name AS cname, '+
-                                    'C1.country_id AS country_id, '+
-                                    'S1.name AS sname, '+
-                                    'S1.spacecraft_id AS spacecraft_id '+
-                                    'FROM mission AS M1 '+
-                                    'INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
-                                    'INNER JOIN country_of_origin AS C1 ON M1.country_id = C1.country_id '+
-                                    'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
-          if(err){
-            next(err);
-            return;
-          }
-          context.results = rows;
-          res.render('astronauts', context);
+         });
         });
     });
     }
@@ -525,7 +598,13 @@ router.get('/spacecraft/:country_id',function(req,res,next){
 router.get('/missions_to_astronauts',function(req,res,next){
     var context = {};
     //First get the mission id's and names for the add menu drop down box
-    mysql.pool.query('SELECT mission_id from mission', function(err, rows, fields){
+    mysql.pool.query('SELECT M1.mission_id AS mission_id, '+
+                        'S1.name AS spacecraft_name, '+
+                        'D1.name AS destination_name, '+
+                        'DATE_FORMAT(M1.launch_date, "%Y-%m-%d") AS launch_date '+
+                        'FROM mission AS M1 '+
+                        'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id '+
+                        'INNER JOIN destination AS D1 on M1.destination_id = D1.destination_id', function(err, rows, fields){
       if(err){
         next(err);
         return;
@@ -539,12 +618,17 @@ router.get('/missions_to_astronauts',function(req,res,next){
         }
         context.astronauts = rows;
                 mysql.pool.query('SELECT M1.mission_id AS mission_id, '+
+                                    'S1.name AS spacecraft_name, '+
+                                    'D1.name AS destination_name, '+
+                                    'DATE_FORMAT(M1.launch_date, "%Y-%m-%d") AS launch_date, '+
                                     'A1.astronaut_id AS astronaut_id, '+
                                     'A1.first_name AS first_name, '+
                                     'A1.last_name AS last_name '+
                                     'FROM mission_to_astronaut MA1 '+
                                     'INNER JOIN astronaut AS A1 ON MA1.astronaut_id = A1.astronaut_id '+
-                                    'INNER JOIN mission AS M1 ON MA1.mission_id = M1.mission_id', function(err, rows, fields){
+                                    'INNER JOIN mission AS M1 ON MA1.mission_id = M1.mission_id '+
+                                    'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id '+
+                                    'INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id', function(err, rows, fields){
                   if(err){
                     next(err);
                     return;
@@ -580,28 +664,6 @@ router.get('/astronauts/delete/:astronaut_id', function(req, res, next){
         console.log("Number of records deleted: " + result.affectedRows);
         res.redirect('/astronauts');
    });
-});
-
-/*Delete specific mission from astronaut */
-router.get('/astronauts/delete_m2a/:mission_id/:astronaut_id', function(req, res, next){
-
-     console.log("delete " + req.params.mission_id + " " + req.params.astronaut_id);
-     mysql.pool.query('DELETE FROM mission_to_astronaut WHERE mission_id=? AND astronaut_id=? LIMIT 1', [req.params.mission_id, req.params.astronaut_id], function(err, result) {
-         if (err) throw err;
-         console.log("Number of records deleted: " + result.affectedRows);
-         res.redirect('/astronauts');
-    });
-});
-
-/*Delete specific astronaut from mission */
-router.get('/missions/delete_m2a/:mission_id/:astronaut_id', function(req, res, next){
-
-     console.log("delete " + req.params.mission_id + " " + req.params.astronaut_id);
-     mysql.pool.query('DELETE FROM mission_to_astronaut WHERE mission_id=? AND astronaut_id=? LIMIT 1', [req.params.mission_id, req.params.astronaut_id], function(err, result) {
-         if (err) throw err;
-         console.log("Number of records deleted: " + result.affectedRows);
-         res.redirect('/missions');
-    });
 });
 
 /*Delete specific spacecraft*/
@@ -644,7 +706,27 @@ router.get('/missions_to_astronauts/delete/:mission_id/:astronaut_id', function(
      mysql.pool.query('DELETE FROM mission_to_astronaut WHERE mission_id=? AND astronaut_id=?', [req.params.mission_id, req.params.astronaut_id], function(err, result) {
          if (err) throw err;
          console.log("Number of records deleted: " + result.affectedRows);
-         res.redirect('/mission_to_astronaut');
+         res.redirect('/missions_to_astronauts');
+    });
+});
+
+router.get('/am/delete/:mission_id/:astronaut_id', function(req, res, next){
+
+     console.log("delete " + req.params.mission_id + " " + req.params.astronaut_id);
+     mysql.pool.query('DELETE FROM mission_to_astronaut WHERE mission_id=? AND astronaut_id=?', [req.params.mission_id, req.params.astronaut_id], function(err, result) {
+         if (err) throw err;
+         console.log("Number of records deleted: " + result.affectedRows);
+         res.redirect('/astronauts');
+    });
+});
+
+router.get('/ma/delete/:mission_id/:astronaut_id', function(req, res, next){
+
+     console.log("delete " + req.params.mission_id + " " + req.params.astronaut_id);
+     mysql.pool.query('DELETE FROM mission_to_astronaut WHERE mission_id=? AND astronaut_id=?', [req.params.mission_id, req.params.astronaut_id], function(err, result) {
+         if (err) throw err;
+         console.log("Number of records deleted: " + result.affectedRows);
+         res.redirect('/missions');
     });
 });
 

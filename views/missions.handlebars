@@ -88,13 +88,16 @@
                                   <div class="card card-body">
                                       <!-- Many-to-many relationship -->
                                       Crew Members:
-                                      <ul id="MA-{{mission_id}}">
-                                      </ul>
-                                      <ul><button class="btn btn-primary btn-sm">Add Astronaut</button></ul>
+                                      <table class="table" id="MA-{{mission_id}}">
+
+                                      </table>
+                                      <div colspan="2">
+                                          <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#maModal" data-whatever="{{mission_id}}">Add Astronaut</button>
+                                      </div>
                                   </div>
                                 </div>
                             </td>
-                        </tr>                     
+                        </tr>
                         {{/each}}
                     </tbody>
                 </table>
@@ -253,6 +256,37 @@
       </div>
     </div>
 
+    <!-- ADD ASTRONAUTS TO MISSIONS MODAL -->
+    <div class="modal fade" id="maModal" tabindex="-1" role="dialog" aria-labelledby="maModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="maModalLabel">Assign Mission to Astronaut</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form class="needs-validation" id="maAdd" action="/ma/" method="post" name="maAdd" target="_self">
+                <input type="hidden" id="mission_id" name="mission_id">
+               <div class="form-group">
+                 <label for="astronaut_id" class="col-form-label">Astronaut</label>
+                     <select class="form-control" id="astronaut_id" name="astronaut_id" form="maAdd">
+                         {{#each astronauts}}
+                           <option value="{{astronaut_id}}">{{first_name}} {{last_name}} from {{country_name}}</option>
+                         {{/each}}
+                     </select>
+               </div>
+            </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <input type="submit" class="btn btn-secondary" value="Save" form="maAdd">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!-- END OF ADD ASTRONAUTS TO MISIONS MODAL -->
 
     <script type="text/javascript">
         /* Onload AJAX call for mission to astronaut relationships */
@@ -288,10 +322,10 @@
                      console.log(elements[i]);
                      var myElement = document.getElementById("MA-" + elements[i].mission_id);
                      if(myElement){
-                          var newLI = document.createElement("li");
+                          var newTR = document.createElement("tr");
                           var ending = elements[i].mission_id + "\/" + elements[i].astronaut_id + "\/";
-                          newLI.innerHTML = "" + elements[i].first_name + " " + elements[i].last_name + "<form method='get' action='/missions/delete_m2a/" + ending + "'><button type='submit' class='btn btn-primary btn-sm'>Delete</button>";
-                          myElement.appendChild(newLI);
+                          newTR.innerHTML = "<td>" + elements[i].first_name + " " + elements[i].last_name + "</td><td><form method='get' action='/ma/delete/" + ending + "'><button type='submit' class='btn btn-primary btn-sm float-right'>Delete</button></td>";
+                          myElement.appendChild(newTR);
                      }
 
                  }
@@ -335,6 +369,18 @@
 
           })
       </script>
-
+      <script>
+        // Source code for Bootstrap modal adapted from :
+        // https://getbootstrap.com/docs/4.0/components/modal/
+        $('#maModal').on('show.bs.modal', function (event) {
+          var button = $(event.relatedTarget) // Button that triggered the modal
+          var recipient = button.data('whatever') // Extract info from data-* attributes
+          // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+          // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+          var modal = $(this)
+          modal.find('.modal-title').text('Add Astronaut to Missions # ' + recipient)
+          document.maAdd.mission_id.value  = recipient;
+        })
+    </script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

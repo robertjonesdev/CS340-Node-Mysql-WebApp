@@ -33,8 +33,8 @@
 <div class="col-md-8">
     <div class="jumbotron jumbotron-fluid pt-4">
         <div class="container-fluid row">
-            <div class="col-md-11"><h2 class="text-secondary">Missions to Astronauts</h2></div>
-            <div class="col-md-1"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">Add</button></div>
+            <div class="col-md-8"><h2 class="text-secondary">Missions to Astronauts</h2></div>
+            <div class="col-md-4"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">Add Astronaut to Mission</button></div>
         </div>
 
         <hr />
@@ -42,22 +42,21 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>Mission ID</th>
+                <th>Mission</th>
                 <th>Astronaut</th>
-                <th>Edit</th>
-                <th>Delete</th>
+                <th></th>
             </tr>
             </thead>
             <tbody id="rowgroup">
                 {{#each results}}
                 <tr>
                       <td id="{{mission_id}}_mission_id" style="display:none;">{{mission_id}}</td>
-                      <td id="{{astronaut_id}}_astronaut_id">{{astronaut_id}}</td>
+                      <td>{{spacecraft_name}} to {{destination_name}} on {{launch_date}}</td>
+                      <td id="{{astronaut_id}}_astronaut_id" style="display:none;">{{astronaut_id}}</td>
                       <td>{{first_name}} {{last_name}}</td>
                       <td id="{{astronaut_id}}_first_name" style="display:none;">{{first_name}}</td>
                       <td id="{{astronaut_id}}_last_name" style="display:none;">{{last_name}}</td>
-                      <td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editModal">Edit</button></td>
-                      <td><form method="get" action="/missions_to_astronauts/delete/{{mission_id}}/{{astronaut_id}}"><button type="submit" class="btn btn-primary btn-sm">Delete</button></form></td>
+                      <td><form method="get" action="/missions_to_astronauts/delete/{{mission_id}}/{{astronaut_id}}/"><button type="submit" class="btn btn-primary btn-sm">Delete</button></form></td>
                 </tr>
                 {{/each}}
             </tbody>
@@ -89,7 +88,7 @@
                     <label for="mission_id" class="col-form-label">Mission:</label>
                     <select class="form-control" id="mission_id" name="mission_id" form="mission-to-astronaut-add">
                         {{#each missions}}
-                          <option value="{{mission_id}}">{{mission_id}}</option>
+                          <option value="{{mission_id}}">{{spacecraft_name}} to {{destination_name}} on {{launch_date}}</option>
                         {{/each}}
                     </select>
               </div>

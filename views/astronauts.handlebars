@@ -31,9 +31,9 @@
 </nav>
 <br>
 <div class="col-md-8">
-    <div class="jumbotron jumbotron-fluid pt-12">
+    <div class="jumbotron jumbotron-fluid pt-4 pl-2 pr-2">
         <div class="container-fluid row">
-            <div class="col-md-6"><h2 class="text-secondary">Astronauts</h2></div>
+            <div class="col-md-7"><h2 class="text-secondary">Astronauts</h2></div>
             <div class="col-md-2">
                 <div class="dropdown">
                   <button class="btn btn-primary dropdown-toggle float-right" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -47,9 +47,7 @@
                   </div>
                 </div>
             </div>
-            <div class="col-md-2"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">New Astronaut</button></div>
-            <div class="col-md-2"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMission">Add Astronaut to Mission</button></div>            
-        </div>
+            <div class="col-md-3"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">New Astronaut</button></div>
 
         <hr />
 
@@ -84,19 +82,13 @@
                     <td colspan="11" class="pt-0 pb-0">
                         <div class="collapse pt-0" id="collapse-{{astronaut_id}}">
                           <div class="card card-body">
-                            <!-- many-to-many relationship -->
+                              <!-- many-to-many relationship -->
                               Missions:
-                              <ul id="AM-{{astronaut_id}}">
-                              </ul>
-                              <div class="dropdown">
-                                <button class="btn btn-primary dropdown-toggle float-left" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  Add Mission
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    {{#each missions}}
-                                      <a class="dropdown-item" option="{{mission_id}}">{{spacecraft_name}} to {{destination_name}} on {{launch_date}}</a>
-                                    {{/each}}
-                                </div>
+                              <table class="table" id="AM-{{astronaut_id}}">
+
+                              </table>
+                              <div colspan="2">
+                                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#maModal" data-whatever="{{astronaut_id}}">Add Mission</button>
                               </div>
                           </div>
                         </div>
@@ -127,18 +119,18 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="astronaut-add" name="astronaut-add" method="post" action="/astronauts">
+        <form class="needs-validation" id="astronaut-add" name="astronaut-add" method="post" action="/astronauts">
             <div class="form-group">
                   <label for="first_name" class="col-form-label">First Name:</label>
-                  <input type="text" class="form-control" id="first_name" name="first_name">
+                  <input type="text" class="form-control" id="first_name" name="first_name" required>
             </div>
             <div class="form-group">
                   <label for="last_name" class="col-form-label">Last name:</label>
-                  <input type="text" class="form-control" id="last_name" name="last_name">
+                  <input type="text" class="form-control" id="last_name" name="last_name" required>
             </div>
            <div class="form-group">
              <label for="birth_date" class="col-form-label">Birth Date:</label>
-             <input type="date" class="form-control" id="birth_date" name="birth_date">
+             <input type="date" class="form-control" id="birth_date" name="birth_date" required>
            </div>
            <div class="form-group">
              <label for="death_date" class="col-form-label">Death Date:</label>
@@ -174,19 +166,19 @@
           </button>
         </div>
         <div class="modal-body">
-          <form id="editRow" action="/astronauts/update/" method="post" name="editRow" target="_self">
+          <form class="needs-validation" id="editRow" action="/astronauts/update/" method="post" name="editRow" target="_self">
               <input type="hidden" id="astronaut_id" name="astronaut_id">
               <div class="form-group">
                     <label for="first_name" class="col-form-label">First Name:</label>
-                    <input type="text" class="form-control" id="first_name" name="first_name">
+                    <input type="text" class="form-control" id="first_name" name="first_name" required>
               </div>
               <div class="form-group">
                     <label for="last_name" class="col-form-label">Last Name:</label>
-                    <input type="text" class="form-control" id="last_name" name="last_name">
+                    <input type="text" class="form-control" id="last_name" name="last_name" required>
               </div>
              <div class="form-group">
                <label for="birth_date" class="col-form-label">Birth Date:</label>
-               <input type="date" class="form-control" id="birth_date" name="birth_date">
+               <input type="date" class="form-control" id="birth_date" name="birth_date" required>
              </div>
              <div class="form-group">
                <label for="death_date" class="col-form-label">Death Date:</label>
@@ -211,37 +203,37 @@
     </div>
     <!-- END OF EDIT MODAL -->
 
-<!-- ADD MISSION MODAL -->
-<div class="modal fade" id="addMission" tabindex="-1" role="dialog" aria-labelledby="addMissionLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addMissionLabel">Add Mission to Astronaut</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+    <!-- ADD MISSION TO ASTRONAUT MODAL -->
+    <div class="modal fade" id="maModal" tabindex="-1" role="dialog" aria-labelledby="maModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="maModalLabel">Assign Mission to Astronaut</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form class="needs-validation" id="maAdd" action="/am/" method="post" name="maAdd" target="_self">
+                <input type="hidden" id="astronaut_id" name="astronaut_id">
+               <div class="form-group">
+                 <label for="mission_id" class="col-form-label">Mission</label>
+                     <select class="form-control" id="mission_id" name="mission_id" form="maAdd">
+                         {{#each missions}}
+                           <option value="{{mission_id}}">{{spacecraft_name}} to {{destination_name}} on {{launch_date}}</option>
+                         {{/each}}
+                     </select>
+               </div>
+            </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <input type="submit" class="btn btn-secondary" value="Save" form="maAdd">
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-      <div class="modal-body">
-          <form id="mission-to-astronaut-add" name="mission-to-astronaut-add"  method="post" action=/astronauts/add_mission>
-            <input type="hidden" id="edit-id" name="editId">
-              <div class="form-group">
-                    <label for="mission_id" class="col-form-label">Mission:</label>
-                    <select class="form-control" id="mission_id" name="mission_id" form="mission-to-astronaut-add">
-                        {{#each missions}}
-                          <option value="{{mission_id}}">{{mission_id}}</option>
-                        {{/each}}
-                    </select>
-              </div>
-              </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                  <input type="submit" class="btn btn-secondary">
-                </div>
-                </form>
-              </div>
-         </div>
-</div>
-    <!-- END OF ADD MISSION MODAL -->
+      <!-- END OF ADD MISSION TO ASTRONAUT MODAL -->
 
     <script type="text/javascript">
         var myAPI = 'http://flip1.engr.oregonstate.edu:7796/am';
@@ -276,10 +268,10 @@
                    console.log(elements[i]);
                    var myElement = document.getElementById("AM-" + elements[i].astronaut_id);
                    if(myElement){
-                        var newLI = document.createElement("li");
+                        var newTR = document.createElement("tr");
                         var ending = elements[i].mission_id + "\/" + elements[i].astronaut_id + "\/";
-                        newLI.innerHTML = "" + elements[i].sname + " to " + elements[i].dname + " from " + elements[i].launch_date + " to " + elements[i].end_date + "<form class='form-inline' method='get' action='/astronauts/delete_m2a/" + ending + "'><button type='submit' class='btn btn-primary btn-sm float-right'>Delete</button>";
-                        myElement.appendChild(newLI);
+                        newTR.innerHTML = "<td>" + elements[i].sname + " to " + elements[i].dname + " from " + elements[i].launch_date + " to " + elements[i].end_date + "</td><td><form class='form-inline' method='get' action='/am/delete/" + ending + "'><button type='submit' class='btn btn-primary btn-sm float-right'>Delete</button></form></td>";
+                        myElement.appendChild(newTR);
                    }
 
                }
@@ -314,6 +306,19 @@
           document.editRow.country_id.value    = Number(document.getElementById(recipient + '_country_id').innerHTML);
         })
     </script>
+    <script>
+      // Source code for Bootstrap modal adapted from :
+      // https://getbootstrap.com/docs/4.0/components/modal/
+      $('#maModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var recipient = button.data('whatever') // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        modal.find('.modal-title').text('Add Mission to Astronaut # ' + recipient)
+        document.maAdd.astronaut_id.value  = recipient;
+      })
+  </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
