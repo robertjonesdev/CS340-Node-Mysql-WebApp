@@ -105,7 +105,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form class="needs-validation" id="spacecraft-add" name="spacecraft-add" method="post" action"/spacecraft">
+        <form class="needs-validation" id="spacecraft-add" action="/spacecraft/" method="post" name="spacecraft-add" target="_self">
             <input type="hidden" id="edit-id" name="editId">
             <div class="form-group">
                   <label for="name" class="col-form-label">Spacecraft Name:</label>
@@ -130,7 +130,7 @@
         </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <input type="submit" class="btn btn-secondary">
+            <input type="submit" class="btn btn-secondary" form="spacecraft-add">
           </div>
         </form>
 

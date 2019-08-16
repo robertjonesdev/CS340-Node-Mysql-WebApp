@@ -599,7 +599,7 @@ router.get('/spacecraft/delete/:spacecraft_id', function(req, res, next){
 });
 
 /*Delete specific space destination*/
-router.get('/destination/delete/:destination_id', function(req, res, next){
+router.get('/destinations/delete/:destination_id', function(req, res, next){
 
      console.log("delete " + req.params.destination_id);
      mysql.pool.query('DELETE FROM destination WHERE destination_id=? ', req.params.destination_id, function(err, result) {
