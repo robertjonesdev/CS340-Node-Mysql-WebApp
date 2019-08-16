@@ -26,7 +26,7 @@ SELECT A1.astronaut_id AS astronaut_id,
     DATE_FORMAT(A1.death_date, "%Y-%m-%d", NULL) AS death_date,
     C1.name AS cname
     FROM astronaut AS A1
-    INNER JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id;
+    LEFT JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id;
 
 -- SELECT the id and name of all astronauts:
 SELECT astronaut_id, first_name FROM astronaut;
@@ -39,7 +39,7 @@ SELECT A1.astronaut_id AS astronaut_id,
     DATE_FORMAT(A1.death_date, "%Y-%m-%d", NULL) AS death_date,
     C1.name AS cname
     FROM astronaut AS A1
-    INNER JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id
+    LEFT JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id
     WHERE C1.country_id = :country_id
 
 -- ------------------------------------------
@@ -124,9 +124,9 @@ SELECT M1.mission_id AS mission_id,
    C1.name AS cname,
    S1.name AS sname
    FROM mission AS M1
-   INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id
-   INNER JOIN country_of_origin AS C1 ON M1.country_id = C1.country_id
-   INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id;
+   LEFT JOIN destination AS D1 ON M1.destination_id = D1.destination_id
+   LEFT JOIN country_of_origin AS C1 ON M1.country_id = C1.country_id
+   LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id;
 
 -- Select the id and name of all missions:
 SELECT mission_id, name FROM mission;
@@ -140,9 +140,9 @@ SELECT M1.mission_id AS mission_id,
     C1.name AS cname,
     S1.name AS sname
     FROM mission AS M1
-    INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id
-    INNER JOIN country_of_origin AS C1 ON M1.country_id = C1.country_id
-    INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id
+    LEFT JOIN destination AS D1 ON M1.destination_id = D1.destination_id
+    LEFT JOIN country_of_origin AS C1 ON M1.country_id = C1.country_id
+    LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id
     WHERE C1.country_id = :country_id
 
 -- ------------------------------------------
@@ -161,7 +161,7 @@ SELECT A1.astronaut_id AS astronaut_id,
         M1.mission_id AS mission_id
         FROM astronaut as A1
         INNER JOIN mission_to_astronaut AS MA1 ON A1.astronaut_id = MA1.astronaut_id
-        INNER JOIN mission AS M1 ON MA1.mission_id = M1.mission_id;
+        LEFT JOIN mission AS M1 ON MA1.mission_id = M1.mission_id;
 
 -- Select the mission-to-astronaut relationship
 SELECT M1.mission_id AS mission_id,
@@ -172,9 +172,9 @@ SELECT M1.mission_id AS mission_id,
         S1.name AS sname
         FROM mission AS M1
         INNER JOIN mission_to_astronaut AS MA1 ON M1.mission_id = MA1.mission_id
-        INNER JOIN astronaut AS A1 ON MA1.astronaut_id = A1.astronaut_id
-        INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id
-        INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id;
+        LEFT JOIN astronaut AS A1 ON MA1.astronaut_id = A1.astronaut_id
+        LEFT JOIN destination AS D1 ON M1.destination_id = D1.destination_id
+        LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id;
 
 -- Delete a mission_to_astronaut relationship from the database:
 DELETE FROM mission_to_astronaut WHERE mission_id = :idInput;
@@ -205,7 +205,7 @@ SELECT S1.spacecraft_id AS spacecraft_id,
     DATE_FORMAT(S1.service_end_date, "%Y-%m-%d", NULL) AS service_end_date,
     C1.name AS cname
     FROM spacecraft AS S1
-    INNER JOIN country_of_origin AS C1 ON S1.country_id = C1.country_id;
+    LEFT JOIN country_of_origin AS C1 ON S1.country_id = C1.country_id;
 
 -- Select the id and name of all spacecraft, used for dropdown boxes:
 SELECT spacecraft_id, name FROM spacecraft;
@@ -217,5 +217,5 @@ SELECT S1.spacecraft_id AS spacecraft_id,
     DATE_FORMAT(S1.service_end_date, "%Y-%m-%d", NULL) AS service_end_date,
     C1.name AS cname
     FROM spacecraft AS S1
-    INNER JOIN country_of_origin AS C1 ON S1.country_id = C1.country_id
+    LEFT JOIN country_of_origin AS C1 ON S1.country_id = C1.country_id
     WHERE S1.country_id = :country_id

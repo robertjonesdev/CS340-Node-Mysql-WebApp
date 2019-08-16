@@ -242,7 +242,7 @@ router.get('/missions',function(req,res,next){
                               'A1.last_name AS last_name, '+
                               'C1.name AS country_name '+
                               'FROM astronaut AS A1 '+
-                              'INNER JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id', function(err, rows, fields){
+                              'LEFT JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id', function(err, rows, fields){
             if(err){
               next(err);
               return;
@@ -261,9 +261,9 @@ router.get('/missions',function(req,res,next){
                                     'S1.name AS sname, '+
                                     'S1.spacecraft_id AS spacecraft_id '+
                                     'FROM mission AS M1 '+
-                                    'INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
-                                    'INNER JOIN country_of_origin AS C1 ON M1.country_id = C1.country_id '+
-                                    'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
+                                    'LEFT JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
+                                    'LEFT JOIN country_of_origin AS C1 ON M1.country_id = C1.country_id '+
+                                    'LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
                   if(err){
                     next(err);
                     return;
@@ -306,7 +306,7 @@ router.get('/missions/:country_id',function(req,res,next){
                               'A1.last_name AS last_name, '+
                               'C1.name AS country_name '+
                               'FROM astronaut AS A1 '+
-                              'INNER JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id', function(err, rows, fields){
+                              'LEFT JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id', function(err, rows, fields){
             if(err){
               next(err);
               return;
@@ -326,9 +326,9 @@ router.get('/missions/:country_id',function(req,res,next){
                                     'S1.name AS sname, '+
                                     'S1.spacecraft_id AS spacecraft_id '+
                                     'FROM mission AS M1 '+
-                                    'INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
-                                    'INNER JOIN country_of_origin AS C1 ON M1.country_id = C1.country_id '+
-                                    'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id ' +
+                                    'LEFT JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
+                                    'LEFT JOIN country_of_origin AS C1 ON M1.country_id = C1.country_id '+
+                                    'LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id ' +
                                     'WHERE C1.country_id = ' + req.params.country_id, function(err, rows, fields){
                   if(err){
                     next(err);
@@ -358,8 +358,8 @@ router.get('/astronauts',function(req,res,next){
                               'D1.name AS destination_name, '+
                               'S1.name AS spacecraft_name '+
                               'FROM mission AS M1 '+
-                              'INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
-                              'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
+                              'LEFT JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
+                              'LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
             if(err){
               next(err);
               return;
@@ -373,7 +373,7 @@ router.get('/astronauts',function(req,res,next){
                                 'C1.name AS cname, '+
                                 'C1.country_id AS country_id '+
                                 'FROM astronaut AS A1 '+
-                                'INNER JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id', function(err, rows, fields){
+                                'LEFT JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id', function(err, rows, fields){
               if(err){
                 next(err);
                 return;
@@ -404,8 +404,8 @@ router.get('/astronauts/:country_id',function(req,res,next){
                           'D1.name AS destination_name, '+
                           'S1.name AS spacecraft_name '+
                           'FROM mission AS M1 '+
-                          'INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
-                          'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
+                          'LEFT JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
+                          'LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
         if(err){
           next(err);
           return;
@@ -419,7 +419,7 @@ router.get('/astronauts/:country_id',function(req,res,next){
                             'C1.name AS cname, '+
                             'C1.country_id AS country_id '+
                             'FROM astronaut AS A1 '+
-                            'INNER JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id ' +
+                            'LEFT JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id ' +
                             'WHERE C1.country_id = ' + req.params.country_id, function(err, rows, fields){
           if(err){
             next(err);
@@ -446,7 +446,7 @@ router.get('/ma',function(req,res,next){
                             'M1.mission_id AS mission_id '+
                             'FROM astronaut AS A1 '+
                             'INNER JOIN mission_to_astronaut AS MA1 ON A1.astronaut_id = MA1.astronaut_id '+
-                            'INNER JOIN mission AS M1 ON MA1.mission_id = M1.mission_id', function(err, rows, fields){
+                            'LEFT JOIN mission AS M1 ON MA1.mission_id = M1.mission_id', function(err, rows, fields){
           if(err){
             next(err);
             return;
@@ -469,9 +469,9 @@ router.get('/am',function(req,res,next){
                             'S1.name AS sname '+
                             'FROM mission AS M1 '+
                             'INNER JOIN mission_to_astronaut AS MA1 ON M1.mission_id = MA1.mission_id '+
-                            'INNER JOIN astronaut AS A1 ON MA1.astronaut_id = A1.astronaut_id '+
-                            'INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
-                            'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
+                            'LEFT JOIN astronaut AS A1 ON MA1.astronaut_id = A1.astronaut_id '+
+                            'LEFT JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
+                            'LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
           if(err){
             next(err);
             return;
@@ -500,7 +500,7 @@ router.get('/spacecraft',function(req,res,next){
                             'C1.name AS cname, '+
                             'C1.country_id AS country_id '+
                             'FROM spacecraft AS S1 '+
-                            'INNER JOIN country_of_origin AS C1 ON S1.country_id = C1.country_id', function(err, rows, fields){
+                            'LEFT JOIN country_of_origin AS C1 ON S1.country_id = C1.country_id', function(err, rows, fields){
           if(err){
             next(err);
             return;
@@ -581,7 +581,7 @@ router.get('/spacecraft/:country_id',function(req,res,next){
                             'DATE_FORMAT(S1.service_end_date, "%Y-%m-%d", NULL) AS service_end_date, '+
                             'C1.name AS cname '+
                             'FROM spacecraft AS S1 '+
-                            'INNER JOIN country_of_origin AS C1 ON S1.country_id = C1.country_id '+
+                            'LEFT JOIN country_of_origin AS C1 ON S1.country_id = C1.country_id '+
                             'WHERE S1.country_id = ' + req.params.country_id, function(err, rows, fields){
           if(err){
             next(err);
@@ -603,8 +603,8 @@ router.get('/missions_to_astronauts',function(req,res,next){
                         'D1.name AS destination_name, '+
                         'DATE_FORMAT(M1.launch_date, "%Y-%m-%d") AS launch_date '+
                         'FROM mission AS M1 '+
-                        'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id '+
-                        'INNER JOIN destination AS D1 on M1.destination_id = D1.destination_id', function(err, rows, fields){
+                        'LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id '+
+                        'LEFT JOIN destination AS D1 on M1.destination_id = D1.destination_id', function(err, rows, fields){
       if(err){
         next(err);
         return;
@@ -625,10 +625,10 @@ router.get('/missions_to_astronauts',function(req,res,next){
                                     'A1.first_name AS first_name, '+
                                     'A1.last_name AS last_name '+
                                     'FROM mission_to_astronaut MA1 '+
-                                    'INNER JOIN astronaut AS A1 ON MA1.astronaut_id = A1.astronaut_id '+
-                                    'INNER JOIN mission AS M1 ON MA1.mission_id = M1.mission_id '+
-                                    'INNER JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id '+
-                                    'INNER JOIN destination AS D1 ON M1.destination_id = D1.destination_id', function(err, rows, fields){
+                                    'LEFT JOIN astronaut AS A1 ON MA1.astronaut_id = A1.astronaut_id '+
+                                    'LEFT JOIN mission AS M1 ON MA1.mission_id = M1.mission_id '+
+                                    'LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id '+
+                                    'LEFT JOIN destination AS D1 ON M1.destination_id = D1.destination_id', function(err, rows, fields){
                   if(err){
                     next(err);
                     return;
