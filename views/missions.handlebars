@@ -358,7 +358,7 @@
 
             // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
             var modal = $(this)
-            modal.find('.modal-title').text('Edit Mission # ' + recipient)
+            modal.find('.modal-title').text('Edit Mission')
 
 
             document.editRow.mission_id.value       = recipient;
@@ -386,7 +386,7 @@
           // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
           // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
           var modal = $(this)
-          modal.find('.modal-title').text('Add Astronaut to Missions # ' + recipient)
+          modal.find('.modal-title').text('Add Astronaut to Missions')
           document.maAdd.mission_id.value  = recipient;
         })
     </script>
