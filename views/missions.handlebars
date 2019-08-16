@@ -158,6 +158,7 @@
             <div class="form-group">
               <label for="country_id" class="col-form-label">County</label>
                 <select class="form-control" id="country_id" name="country_id" form="mission-add">
+                        <option value="">None</option>
                       {{#each countries}}
                         <option value="{{country_id}}">{{name}}</option>
                       {{/each}}
@@ -230,6 +231,7 @@
             <div class="form-group">
               <label for="edit_country_id" class="col-form-label">Country</label>
                   <select class="form-control" id="country_id" name="country_id" form="editRow">
+                      <option value="">None</option>
                       {{#each countries}}
                         <option value="{{country_id}}">{{name}}</option>
                       {{/each}}

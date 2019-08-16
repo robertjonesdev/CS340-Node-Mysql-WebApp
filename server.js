@@ -80,7 +80,12 @@ router.post('/spacecraft', function(req, res, next){
       parameters.push(req.body['service_start_date']);
       if (req.body['service_end_date'] == '') { parameters.push(null); }
       else { parameters.push(req.body['service_end_date']); }
-      parameters.push(Number(req.body['country_id']));
+      if (req.body['country_id'] == '') {
+            parameters.push(null);
+      }
+      else {
+          parameters.push(Number(req.body['country_id']));
+      }
       console.log(parameters);
       mysql.pool.query("INSERT INTO spacecraft (name, service_start_date, service_end_date, country_id) VALUES (?)", [parameters], function(err, result, fields){
           if(err) throw err;
@@ -100,8 +105,9 @@ router.post('/astronauts', function(req, res, next){
       parameters.push(req.body['last_name']);
       parameters.push(req.body['birth_date']);
       if (req.body['death_date'] == '') { parameters.push(null); }
-      else { parameters.push(req.body['death_date']); }
-      parameters.push(Number(req.body['country_id']));
+        else { parameters.push(req.body['death_date']); }
+      if (req.body['country_id'] == '' || isNaN(req.body['country_id'])) { parameters.push(null); }
+          else { parameters.push(Number(req.body['country_id'])); }
       console.log(parameters);
       mysql.pool.query("INSERT INTO astronaut (first_name, last_name, birth_date, death_date, country_id) VALUES (?)", [parameters], function(err, result, fields){
           if(err) throw err;
@@ -116,10 +122,12 @@ router.post('/missions/add', function(req, res, next){
       var parameters = [];
       parameters.push(req.body['launch_date']);
       if (req.body['end_date'] == '') { parameters.push(null); }
-      else { parameters.push(req.body['end_date']); }
-      parameters.push(Number(req.body['success']));
+        else { parameters.push(req.body['end_date']); }
+      if(req.body['success'] == '' || isNaN(req.body['success'])) { parameters.push(null); }
+        else { parameters.push(Number(req.body['success'])); }
       parameters.push(Number(req.body['destination_id']));
-      parameters.push(Number(req.body['country_id']));
+      if (req.body['country_id'] == '' || isNaN(req.body['country_id'])) { parameters.push(null); }
+        else { parameters.push(Number(req.body['country_id'])); }
       parameters.push(Number(req.body['spacecraft_id']));
       console.log(parameters);
       mysql.pool.query("INSERT INTO mission (launch_date, end_date, success, destination_id, country_id, spacecraft_id) VALUES (?)", [parameters], function(err, result, fields){
@@ -218,24 +226,15 @@ router.get('/missions',function(req,res,next){
     var context = {};
     //First get the country id's and names for the sort drop down box.
     mysql.pool.query('SELECT country_id, name FROM country_of_origin', function(err, rows, fields){
-      if(err){
-        next(err);
-        return;
-      }
+        if(err){ next(err); return; }
       context.countries = rows;
       //Next get destinations for add menu drop down box
       mysql.pool.query('SELECT destination_id, name FROM destination', function(err, rows, fields){
-        if(err){
-          next(err);
-          return;
-        }
+        if(err){ next(err); return; }
         context.destinations = rows;
         //Next get the spacecrafts for the add menu dro down box
         mysql.pool.query('SELECT spacecraft_id, name FROM spacecraft', function(err, rows, fields){
-          if(err){
-            next(err);
-            return;
-          }
+        if(err){ next(err); return; }
           context.spacecraft = rows;
           mysql.pool.query('SELECT A1.astronaut_id AS astronaut_id, '+
                               'A1.first_name AS first_name, '+
@@ -243,10 +242,7 @@ router.get('/missions',function(req,res,next){
                               'C1.name AS country_name '+
                               'FROM astronaut AS A1 '+
                               'LEFT JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id', function(err, rows, fields){
-            if(err){
-              next(err);
-              return;
-            }
+        if(err){ next(err); return; }
             context.astronauts = rows;
               //Finally get missions
                 mysql.pool.query('SELECT M1.mission_id AS mission_id, '+
@@ -264,10 +260,7 @@ router.get('/missions',function(req,res,next){
                                     'LEFT JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
                                     'LEFT JOIN country_of_origin AS C1 ON M1.country_id = C1.country_id '+
                                     'LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
-                  if(err){
-                    next(err);
-                    return;
-                  }
+                    if(err){ next(err); return; }
                   context.results = rows;
                   console.log("Select Missions [0...i]: " + context.results[0]);
                   res.render('missions', context);
@@ -282,24 +275,15 @@ router.get('/missions/:country_id',function(req,res,next){
     var context = {};
     //First get the country id's and names for the sort drop down box.
     mysql.pool.query('SELECT country_id, name FROM country_of_origin', function(err, rows, fields){
-      if(err){
-        next(err);
-        return;
-      }
+        if(err){ next(err); return; }
       context.countries = rows;
       //Next get destinations for add menu drop down box
       mysql.pool.query('SELECT destination_id, name FROM destination', function(err, rows, fields){
-        if(err){
-          next(err);
-          return;
-        }
+        if(err){ next(err); return; }
         context.destinations = rows;
         //Next get the spacecrafts for the add menu dro down box
         mysql.pool.query('SELECT spacecraft_id, name FROM spacecraft', function(err, rows, fields){
-          if(err){
-            next(err);
-            return;
-          }
+        if(err){ next(err); return; }
           context.spacecraft = rows;
           mysql.pool.query('SELECT A1.astronaut_id AS astronaut_id, '+
                               'A1.first_name AS first_name, '+
@@ -307,10 +291,7 @@ router.get('/missions/:country_id',function(req,res,next){
                               'C1.name AS country_name '+
                               'FROM astronaut AS A1 '+
                               'LEFT JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id', function(err, rows, fields){
-            if(err){
-              next(err);
-              return;
-            }
+        if(err){ next(err); return; }
             context.astronauts = rows;
 
               //Finally get missions
@@ -330,10 +311,7 @@ router.get('/missions/:country_id',function(req,res,next){
                                     'LEFT JOIN country_of_origin AS C1 ON M1.country_id = C1.country_id '+
                                     'LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id ' +
                                     'WHERE C1.country_id = ' + req.params.country_id, function(err, rows, fields){
-                  if(err){
-                    next(err);
-                    return;
-                  }
+                  if(err){ next(err); return; }
                   context.results = rows;
                   console.log("Select Missions [0...i]: " + context.results[0]);
                   res.render('missions', context);
@@ -348,10 +326,7 @@ router.get('/astronauts',function(req,res,next){
     var context = {};
     //First get the country id's and names for the sort drop down box.
     mysql.pool.query('SELECT country_id, name FROM country_of_origin', function(err, rows, fields){
-      if(err){
-        next(err);
-        return;
-      }
+        if(err){ next(err); return; }
       context.countries = rows;
           mysql.pool.query('SELECT M1.mission_id AS mission_id, '+
                               'DATE_FORMAT(M1.launch_date, "%Y-%m-%d") AS launch_date, '+
@@ -360,10 +335,7 @@ router.get('/astronauts',function(req,res,next){
                               'FROM mission AS M1 '+
                               'LEFT JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
                               'LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
-            if(err){
-              next(err);
-              return;
-            }
+        if(err){ next(err); return; }
             context.missions = rows;
             mysql.pool.query('SELECT A1.astronaut_id AS astronaut_id, '+
                                 'A1.first_name AS first_name, '+
@@ -374,10 +346,7 @@ router.get('/astronauts',function(req,res,next){
                                 'C1.country_id AS country_id '+
                                 'FROM astronaut AS A1 '+
                                 'LEFT JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id', function(err, rows, fields){
-              if(err){
-                next(err);
-                return;
-              }
+        if(err){ next(err); return; }
               context.results = rows;
               console.log("Select Astronauts [0...i]: " + context.results[0]);
               res.render('astronauts', context);
@@ -394,10 +363,7 @@ router.get('/astronauts/:country_id',function(req,res,next){
     var context = {};
     //First get the country id's and names for the sort drop down box.
     mysql.pool.query('SELECT country_id, name FROM country_of_origin', function(err, rows, fields){
-      if(err){
-        next(err);
-        return;
-      }
+        if(err){ next(err); return; }
       context.countries = rows;
       mysql.pool.query('SELECT M1.mission_id AS mission_id, '+
                           'DATE_FORMAT(M1.launch_date, "%Y-%m-%d") AS launch_date, '+
@@ -406,10 +372,7 @@ router.get('/astronauts/:country_id',function(req,res,next){
                           'FROM mission AS M1 '+
                           'LEFT JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
                           'LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
-        if(err){
-          next(err);
-          return;
-        }
+        if(err){ next(err); return; }
         context.missions = rows;
         mysql.pool.query('SELECT A1.astronaut_id AS astronaut_id, '+
                             'A1.first_name AS first_name, '+
@@ -421,10 +384,7 @@ router.get('/astronauts/:country_id',function(req,res,next){
                             'FROM astronaut AS A1 '+
                             'LEFT JOIN country_of_origin AS C1 ON A1.country_id = C1.country_id ' +
                             'WHERE C1.country_id = ' + req.params.country_id, function(err, rows, fields){
-          if(err){
-            next(err);
-            return;
-          }
+        if(err){ next(err); return; }
           context.results = rows;
           console.log("Select Astronauts [0...i]: " + context.results[0]);
           res.render('astronauts', context);
@@ -447,10 +407,7 @@ router.get('/ma',function(req,res,next){
                             'FROM astronaut AS A1 '+
                             'INNER JOIN mission_to_astronaut AS MA1 ON A1.astronaut_id = MA1.astronaut_id '+
                             'LEFT JOIN mission AS M1 ON MA1.mission_id = M1.mission_id', function(err, rows, fields){
-          if(err){
-            next(err);
-            return;
-          }
+        if(err){ next(err); return; }
           context.results = rows;
           console.log("Select Mission to Astronauts " + context.results[0]);
           res.send(JSON.stringify(rows));
@@ -472,10 +429,7 @@ router.get('/am',function(req,res,next){
                             'LEFT JOIN astronaut AS A1 ON MA1.astronaut_id = A1.astronaut_id '+
                             'LEFT JOIN destination AS D1 ON M1.destination_id = D1.destination_id '+
                             'LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id', function(err, rows, fields){
-          if(err){
-            next(err);
-            return;
-          }
+        if(err){ next(err); return; }
           context.results = rows;
           console.log("Select Mission to Astronauts " + context.results[0]);
           res.send(JSON.stringify(rows));
@@ -486,10 +440,7 @@ router.get('/spacecraft',function(req,res,next){
     var context = {};
     //First get the country id's and names for the sort drop down box.
     mysql.pool.query('SELECT country_id, name FROM country_of_origin', function(err, rows, fields){
-      if(err){
-        next(err);
-        return;
-      }
+       if(err){ next(err); return; }
       context.countries = rows;
 
         //Next, get the spacecraft and render page.
@@ -501,10 +452,7 @@ router.get('/spacecraft',function(req,res,next){
                             'C1.country_id AS country_id '+
                             'FROM spacecraft AS S1 '+
                             'LEFT JOIN country_of_origin AS C1 ON S1.country_id = C1.country_id', function(err, rows, fields){
-          if(err){
-            next(err);
-            return;
-          }
+          if(err){ next(err); return; }
           context.results = rows;
           console.log("Select Spacecraft [0...i]: " + context.results[0]);
           res.render('spacecraft', context);
@@ -515,10 +463,7 @@ router.get('/spacecraft',function(req,res,next){
 router.get('/destinations',function(req,res,next){
     var context = {};
     mysql.pool.query('SELECT * FROM destination', function(err, rows, fields){
-      if(err){
-        next(err);
-        return;
-      }
+      if(err){ next(err); return; }
       context.results = rows;
       console.log("Select Destinations [0...i]: " + context.results[0]);
       res.render('destinations', context);
@@ -528,10 +473,7 @@ router.get('/destinations',function(req,res,next){
 router.get('/destinations/desc',function(req,res,next){
     var context = {};
     mysql.pool.query('SELECT * FROM destination ORDER BY distance_from_earth DESC', function(err, rows, fields){
-      if(err){
-        next(err);
-        return;
-      }
+        if(err){ next(err); return; }
       context.results = rows;
       console.log("Select Destinations [0...i]: " + context.results[0]);
       res.render('destinations', context);
@@ -541,10 +483,7 @@ router.get('/destinations/desc',function(req,res,next){
 router.get('/destinations/asc',function(req,res,next){
     var context = {};
     mysql.pool.query('SELECT * FROM destination ORDER BY distance_from_earth ASC', function(err, rows, fields){
-      if(err){
-        next(err);
-        return;
-      }
+      if(err){ next(err); return; }
       context.results = rows;
       console.log("Select Destinations [0...i]: " + context.results[0]);
       res.render('destinations', context);
@@ -554,10 +493,7 @@ router.get('/destinations/asc',function(req,res,next){
 router.get('/countries',function(req,res,next){
     var context = {};
     mysql.pool.query('SELECT * FROM country_of_origin', function(err, rows, fields){
-      if(err){
-        next(err);
-        return;
-      }
+      if(err){ next(err); return; }
       context.results = rows;
       console.log("Select Countries [0...i]: " + context.results[0]);
       res.render('countries', context);
@@ -569,10 +505,7 @@ router.get('/spacecraft/:country_id',function(req,res,next){
     var context = {};
     //First get the country id's and names for the sort drop down box.
     mysql.pool.query('SELECT country_id, name FROM country_of_origin', function(err, rows, fields){
-      if(err){
-        next(err);
-        return;
-      }
+      if(err){ next(err); return; }
       context.countries = rows;
         //Next, get the spacecraft and render page.
         mysql.pool.query('SELECT S1.spacecraft_id AS spacecraft_id, '+
@@ -583,10 +516,7 @@ router.get('/spacecraft/:country_id',function(req,res,next){
                             'FROM spacecraft AS S1 '+
                             'LEFT JOIN country_of_origin AS C1 ON S1.country_id = C1.country_id '+
                             'WHERE S1.country_id = ' + req.params.country_id, function(err, rows, fields){
-          if(err){
-            next(err);
-            return;
-          }
+          if(err){ next(err); return; }
           context.results = rows;
           console.log("Select Spacecraft [0...i]: " + context.results[0]);
           res.render('spacecraft', context);
@@ -605,17 +535,11 @@ router.get('/missions_to_astronauts',function(req,res,next){
                         'FROM mission AS M1 '+
                         'LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id '+
                         'LEFT JOIN destination AS D1 on M1.destination_id = D1.destination_id', function(err, rows, fields){
-      if(err){
-        next(err);
-        return;
-      }
+      if(err){ next(err); return;  }
       context.missions = rows;
       //Next get astronaut_id for add menu drop down box
       mysql.pool.query('SELECT astronaut_id, first_name, last_name FROM astronaut', function(err, rows, fields){
-        if(err){
-          next(err);
-          return;
-        }
+        if(err){ next(err); return; }
         context.astronauts = rows;
                 mysql.pool.query('SELECT M1.mission_id AS mission_id, '+
                                     'S1.name AS spacecraft_name, '+
@@ -629,10 +553,7 @@ router.get('/missions_to_astronauts',function(req,res,next){
                                     'LEFT JOIN mission AS M1 ON MA1.mission_id = M1.mission_id '+
                                     'LEFT JOIN spacecraft AS S1 ON M1.spacecraft_id = S1.spacecraft_id '+
                                     'LEFT JOIN destination AS D1 ON M1.destination_id = D1.destination_id', function(err, rows, fields){
-                  if(err){
-                    next(err);
-                    return;
-                  }
+                  if(err){ next(err); return; }
                   context.results = rows;
                   console.log("Select Missions to Astronauts [0...i]: " + context.results[0]);
                   res.render('missions_to_astronauts', context);
@@ -740,15 +661,13 @@ router.post('/missions/update', function(req, res, next){
             var curVals = result[0];
             var parameters = [];
             parameters.push("'" + req.body['launch_date'] + "'" || curVals.launch_date);
-            if (req.body['end_date'] == '') {
-                parameters.push(null);
-            }
-            else {
-                parameters.push("'" + req.body['end_date'] + "'");
-            }
-            parameters.push(Number(req.body['success'])) || curVals.success;
+            if (req.body['end_date'] == '') { parameters.push(null); }
+                else { parameters.push("'" + req.body['end_date'] + "'");  }
+            if(req.body['success'] == '' || isNaN(req.body['success'])) { parameters.push(null); }
+              else { parameters.push(Number(req.body['success'])); }
             parameters.push(Number(req.body['destination_id']) || curVals.destination_id);
-            parameters.push(Number(req.body['country_id']) || curVals.country_id);
+            if (req.body['country_id'] == '' || isNaN(req.body['country_id'])) { parameters.push(null); }
+                else { parameters.push(Number(req.body['country_id'])); }
             parameters.push(Number(req.body['spacecraft_id']) || curVals.spacecraft_id);
             parameters.push(Number(req.body['mission_id']));
             console.log(parameters);
@@ -777,13 +696,10 @@ router.post('/astronauts/update', function(req, res, next){
             parameters.push("'" + req.body['first_name'] + "'" || curVals.first_name);
             parameters.push("'" + req.body['last_name']  + "'" || curVals.last_name);
             parameters.push("'" + req.body['birth_date'] + "'" || curVals.birth_date);
-            if (req.body['death_date'] == '') {
-                parameters.push(null);
-            }
-            else {
-                parameters.push("'" + req.body['death_date'] + "'");
-            }
-            parameters.push(Number(req.body['country_id']) || curVals.country_id);
+            if (req.body['death_date'] == '') { parameters.push(null); }
+                else { parameters.push("'" + req.body['death_date'] + "'"); }
+            if (req.body['country_id'] == '' || isNaN(req.body['country_id'])) { parameters.push(null); }
+                else { parameters.push(Number(req.body['country_id'])); }
             parameters.push(Number(req.body['astronaut_id']) || curVals.astronaut_id);
             console.log(parameters);
             mysql.pool.query('UPDATE astronaut SET'+
@@ -809,7 +725,8 @@ router.post('/countries/update', function(req, res, next){
             var parameters = [];
             parameters.push("'" + req.body['name'] + "'" || curVals.name);
             parameters.push("'" + req.body['space_agency_name'] + "'" || curVals.space_agency_name);
-            parameters.push(Number(req.body['country_id']) || curVals.country_id);
+            if (req.body['country_id'] == '' || isNaN(req.body['country_id'])) { parameters.push(null); }
+                else { parameters.push(Number(req.body['country_id'])); }
             console.log(parameters);
             mysql.pool.query('UPDATE country_of_origin SET'+
                               ' name='+ parameters[0] +
@@ -831,13 +748,10 @@ router.post('/spacecraft/update', function(req, res, next){
             var parameters = [];
             parameters.push("'" + req.body['name'] + "'" || curVals.name);
             parameters.push("'" + req.body['service_start_date'] + "'" || curVals.service_start_date);
-            if (req.body['service_end_date'] == '') {
-                parameters.push(null);
-            }
-            else {
-                parameters.push("'" + req.body['service_end_date'] + "'");
-            }
-            parameters.push(Number(req.body['country_id']) || curVals.country_id);
+            if (req.body['service_end_date'] == '') { parameters.push(null); }
+                else { parameters.push("'" + req.body['service_end_date'] + "'"); }
+            if (req.body['country_id'] == '' || isNaN(req.body['country_id'])) { parameters.push(null); }
+                else { parameters.push(Number(req.body['country_id'])); }
             parameters.push(Number(req.body['spacecraft_id']) || curVals.spacecraft_id);
             console.log(parameters);
             mysql.pool.query('UPDATE spacecraft SET'+
